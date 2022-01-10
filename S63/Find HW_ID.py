@@ -97,8 +97,8 @@ def ASCiiPairToHex(val, len = 5):
     except:
         return hex(int(0))
 
-def findM_ID(encryID):
-    print('-----------------------------------\nStart Scan ' + encryID)
+def findM_ID(encryID, text):
+    print('-----------------------------------\nStart Scan ' + encryID + ' (' + text + ')')
     Write(encryID)
     printProgressBar(0, max, '0/' + str(max))
     encryID = encryID[0:16]
@@ -178,22 +178,31 @@ def unitTest(): #unit tests - encrypt
 
 unitTest()
 
-#From S-63 docs
+# From S=63 docs
 #M_KEY: 65825 10121 (3130313231) HW_ID: 12345 (3132333435)
-#findM_ID('66B5CBFDF7E4139D')
+findM_ID('66B5CBFDF7E4139D','From S=63 docs')
 
-#From S-63 docs
+# From S=63 docs
 #M_KEY: 624485 98765 (3938373635) HW_ID: 12348 (3132333438)
-#findM_ID('73871727080876A07E450C043031')
+findM_ID('73871727080876A07E450C043031','From S=63 docs')
 
 #M_KEY: 703710 0xabcde (373033373130) HW_ID: EDCBA (4544434241)
-#findM_ID('C0AD0FF2ACE832EB')
-
-#M_KEY: 148247 24317 (3234333137) HW_ID: 2715 (3032373135)
-#findM_ID('51ABA63B31D3BD5B')
+#findM_ID('C0AD0FF2ACE832EB','Derived')
 
 #SAM ChartPilot 1100 Version 6.14 Build 69
-findM_ID('E7A63F22C8B0B9CDCAF68D323134')
-findM_ID('057DA7ADC227C0D0')
-findM_ID('7D88AC20B915A587')
-findM_ID('EB3C7E109D3A6064')
+#E7A63F22C8B0B9CD CAF68D32 3134
+findM_ID('E7A63F22C8B0B9CDCAF68D323134','SAM ChartPilot 1100')
+
+#encry_HW_ID = '057DA7ADC227C0D0'
+#findM_ID('057DA7ADC227C0D0','Derived')
+
+#encry_HW_ID = '7D88AC20B915A587'
+#findM_ID('7D88AC20B915A587','Derived')
+
+# Test from doc (might not be real...)
+# M_KEY: 0x98765 (363234343835) HW_ID: 74568 (3132333438)
+findM_ID('73871727080876A0','Test from doc (might not be real...)')# A79AB
+
+#findM_ID('51ABA63B31D3BD5B','Derived')
+#findM_ID('EB3C7E109D3A6064','Derived')
+

@@ -2,8 +2,6 @@ import blowfish
 import binascii
 from funcs import *
 
-
-
 HW_ID = '3132333438' #5 bytes in hexadecimal
 CK1 = 'C1CB518E9C' #5 bytes in hexadecimal
 CK2 = '421571CC66' #5 bytes in hexadecimal
