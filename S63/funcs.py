@@ -54,7 +54,6 @@ def depad(block):
     if b <= 16: block = block[:-b*2]
     return block
 
-#Stuff
 def decryptId(id, val, padVal = True, depadResult = True):
     try:
         if padVal: val = pad(val)
@@ -64,8 +63,7 @@ def decryptId(id, val, padVal = True, depadResult = True):
         return block
     except:
         return (-1)
-
-#Stuff
+        
 def decryptCy(cipher, val, padVal = True, depadResult = True):
     try:
         if padVal: val = pad(val)
