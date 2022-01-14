@@ -1,12 +1,49 @@
 
-import blowfish, sys
+import blowfish, sys, os
+
+def clearConsole():
+    import os
+    clear = lambda: os.system('clear')
+    clear()
+
+def bytes_to_int(bytesIn):
+    #try:
+        bytesIn2 = bytearray(bytesIn)
+        if int.from_bytes(bytesIn,"big") == 0: return 0
+        l = len(bytesIn2) - 1
+        b = bytesIn2[l]
+        while bytesIn2[l] == 0:
+            del bytesIn2[l]
+            l = l-1
+        byteObject = bytes(bytesIn2)
+        return int.from_bytes(byteObject,"big")
+    #except: return 0
+
+def clearDir(path):
+    import glob
+    files = glob.glob(path)
+    for f in files:
+        os.remove(f)
+
+def IntToTime(intVal):
+    import time
+    x = intVal 
+    return time.strftime('%H:%M:%S', time.localtime(x))
+
+def IntToDate(intVal):
+    import datetime
+    timestamp = datetime.datetime.fromtimestamp(intVal)
+    return timestamp.strftime('%Y-%m-%d %H:%M:%S')
+
+def WriteBinary(filename,binaryVal,append = False):
+    #if os.path.exists(filename) or not append:
+    #    os.remove(filename)
+    file = open(filename, "wb")
+    file.write(binaryVal)
+    file.close()        
 
 def pad(val):
-    """
-    This function greets to
-    the person passed in as
-    a parameter
-    """
+    """This function pads a hex value to be 8 bytes in length"""
     val = val.lstrip('0x')
     a = int((16-len(val))/2)
     for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')

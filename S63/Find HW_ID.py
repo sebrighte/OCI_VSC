@@ -99,9 +99,9 @@ def ASCiiPairToHex(val, len = 5):
 
 def findM_ID(encryID, text):
     print('-----------------------------------\nStart Scan ' + encryID + ' (' + text + ')')
-    Write(encryID)
     printProgressBar(0, max, '0/' + str(max))
     encryID = encryID[0:16]
+    Write('-----------------------------------\nStart Scan ' + encryID + ' (' + text + ')')
     for n in range(min, max):
         hexv = hex(n).lstrip('0x').upper()
         num = hexToASCiiPair(hexv)
@@ -113,7 +113,7 @@ def findM_ID(encryID, text):
                 if findLen(hexv) == 5 and findLen(ASCiiPairToHex(val)) > 3: 
                     print(' ')
                     print('M_KEY:', n, hexv, '(' + hexToASCiiPair(str(hex(n))) + ') HW_ID:', ASCiiPairToHex(val), '('+val+')')
-                    Write('M_KEY: ' + hexv.upper() + ' (' + hexToASCiiPair(str(hex(n))) + ') HW_ID: ' + ASCiiPairToHex(val).upper() + ' ('+val+')')
+                    Write('M_KEY: ' + hexv.upper() + ' (' + hexToASCiiPair(str(hex(n))) + ') HW_ID: ' + ASCiiPairToHex(val).upper() + ' ('+val+')' )
                     break
 
             #elif  a > 0:
@@ -124,7 +124,9 @@ def findM_ID(encryID, text):
             printProgressBar(n, max, str(n) + '(' + hex(n).lstrip('0x').upper() + '-' +  num + ')/' + str(max))
 
     printProgressBar(max, max, 'Complete                                                         ')
-    if min == max: Write("No valid keys found")
+    if n == max: 
+        Write("No valid keys found")
+        print("No valid keys found")
     print('')
 
 def CreateUserPermit(M_KEY,HW_ID,M_ID):
@@ -180,29 +182,29 @@ unitTest()
 
 # From S=63 docs
 #M_KEY: 65825 10121 (3130313231) HW_ID: 12345 (3132333435)
-findM_ID('66B5CBFDF7E4139D','From S=63 docs')
+findM_ID('66B5CBFDF7E4139D','From S63 docs')
 
 # From S=63 docs
 #M_KEY: 624485 98765 (3938373635) HW_ID: 12348 (3132333438)
-findM_ID('73871727080876A07E450C043031','From S=63 docs')
+findM_ID('73871727080876A07E450C043031','From S63 docs')
 
 #M_KEY: 703710 0xabcde (373033373130) HW_ID: EDCBA (4544434241)
-#findM_ID('C0AD0FF2ACE832EB','Derived')
+findM_ID('C0AD0FF2ACE832EB','Derived')
 
 #SAM ChartPilot 1100 Version 6.14 Build 69
 #E7A63F22C8B0B9CD CAF68D32 3134
 findM_ID('E7A63F22C8B0B9CDCAF68D323134','SAM ChartPilot 1100')
 
 #encry_HW_ID = '057DA7ADC227C0D0'
-#findM_ID('057DA7ADC227C0D0','Derived')
+findM_ID('057DA7ADC227C0D0','Derived')
 
 #encry_HW_ID = '7D88AC20B915A587'
-#findM_ID('7D88AC20B915A587','Derived')
+findM_ID('7D88AC20B915A587','Derived')
 
 # Test from doc (might not be real...)
 # M_KEY: 0x98765 (363234343835) HW_ID: 74568 (3132333438)
 findM_ID('73871727080876A0','Test from doc (might not be real...)')# A79AB
 
-#findM_ID('51ABA63B31D3BD5B','Derived')
-#findM_ID('EB3C7E109D3A6064','Derived')
+findM_ID('51ABA63B31D3BD5B','Derived')
+findM_ID('EB3C7E109D3A6064','Derived')
 
