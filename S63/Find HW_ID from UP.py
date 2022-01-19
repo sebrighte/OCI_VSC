@@ -5,47 +5,14 @@ import sys
 import re
 import os
 
+from funcs import *
+
 min = 0x10000
 max = 0xFFFFF  
 
-filename = "S63/OutputValues"
+filename = "S63/OutputValues.txt"
 if os.path.exists(filename):
     os.remove(filename)
-
-def Write(strVal):
-    with open(filename, "a") as file_object:
-        file_object.write(strVal + '\n')
-
-def encrypt(id,val):
-    if len(id) == 5: id = hexToASCiiPair(id)
-    if len(val) == 5: val = hexToASCiiPair(val)
-    a = int((16-len(val))/2)
-    for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')
-    cipher = blowfish.Cipher(bytes.fromhex(str(id)))
-    block = bytes.fromhex(str(val))
-    retBlock = (cipher.encrypt_block(block).hex()).upper()
-    return (retBlock, id, block)
-
-def decrypt(id,val):
-    try:
-        if len(id) == 5: id = hexToASCiiPair(id)
-        if len(val) == 5: val = hexToASCiiPair(val)
-        cipher = blowfish.Cipher(bytes.fromhex(str(id)))
-        block = cipher.decrypt_block(bytes.fromhex(val)).hex()
-        # remove padding if last value less than 8
-        b = int(block[-2:])
-        if b <= 8:
-            block2 = block[:-b*2]
-        if block2 == '': return (0, block)
-        return (block2, block)
-    except:
-        return (0, block)
-
-def findLen(str):
-    counter = 0    
-    for i in str:
-        counter += 1
-    return counter
 
 def printProgressBar(i,max,postText):
     n_bar =10 #size of progress bar
@@ -54,78 +21,31 @@ def printProgressBar(i,max,postText):
     sys.stdout.write(f"[{'=' * int(n_bar * j):{n_bar}s}] {int(100 * j)}%  {postText}")
     sys.stdout.flush()
 
-def hexToASCiiPair(val):
-    hexv = ""
-    len = 5
-    val = val.lstrip('0x').upper()
-    for i in val:
-        hexv = hexv + str(hex(ord(str(i))).lstrip('0x'))
-    l = findLen(hexv)
-    l2 = ((2*len) - l)/2
-    k = int((10 - l)/2)
-    for n in range(0, k):
-        ch = str(k)
-        hexv += '0' + ch
-    return hexv
-
-def findLen(str):
-    counter = 0    
-    for i in str:
-        counter += 1
-    return counter
-
-def ASCiiPairToHex(val, len = 5):
-    try:
-        # remove padding if last value less than 8
-        l = findLen(val)
-        b = int(val[-2:])
-        if b <= l-2:
-            val = val[:-b*2]
-        i = ""
-        l = findLen(val) # recalc on new val
-        #if l < 10: return hex(int(0))
-        for n in range(0, l, 2):
-            h = val[n:n+2]
-            x = re.search("[3][0-9]|[46][1-6]", h)  
-            if not x: 
-                #print(h)
-                return hex(int(0))
-            b = binascii.unhexlify(h)
-            c = str(b, 'utf-8')
-            i = i + c
-        return hex(int(i, 16)).lstrip('0x').upper()
-    except:
-        return hex(int(0))
-
-def findM_ID(encryID, text):
+def findM_ID(encryID, text, pmin = 0x1000):
+    min = pmin
+    encryID = encryID[0:16]
     print('-----------------------------------\nStart Scan ' + encryID + ' (' + text + ')')
     printProgressBar(0, max, '0/' + str(max))
-    encryID = encryID[0:16]
-    Write('-----------------------------------\nStart Scan ' + encryID + ' (' + text + ')')
+    Write("S63/OutputValues.txt",'-----------------------------------\nStart Scan ' + encryID + ' (' + text + ')')
     for n in range(min, max):
-        hexv = hex(n).lstrip('0x').upper()
-        num = hexToASCiiPair(hexv)
-        val = decrypt(num,encryID)[0]
-        if len(str(val)) == 10: 
-            a = ASCiiPairToHex(val)
-            a = int(a, 16)
-            if a <= 0xFFFFF and a > 0:
-                if findLen(hexv) == 5 and findLen(ASCiiPairToHex(val)) > 3: 
-                    print(' ')
-                    print('M_KEY:', n, hexv, '(' + hexToASCiiPair(str(hex(n))) + ') HW_ID:', ASCiiPairToHex(val), '('+val+')')
-                    Write('M_KEY: ' + hexv.upper() + ' (' + hexToASCiiPair(str(hex(n))) + ') HW_ID: ' + ASCiiPairToHex(val).upper() + ' ('+val+')' )
-                    break
 
-            #elif  a > 0:
-            #    print(' ')
-            #    print('?M_KEY:'+ hexv, '(' + hexToASCiiPair(str(hex(n))) + ') HW_ID:', ASCiiPairToHex(val), '('+val+')')
+        hexvb = hex(n).lstrip('0x').upper().encode()
+        encryIDb = bytes.fromhex(encryID)
 
+        cipher = blowfish.Cipher(hexvb)
+        val = b"".join(cipher.decrypt_ecb(encryIDb)).hex()
+
+        if val[-6:] == '030303':
+            print('\nM_KEY:', hexvb.decode(), 'HW_ID:', depad(val))
+            Write("S63/OutputValues.txt",'M_KEY:' + str(hexvb.decode()) + ' HW_ID:' + str(depad(val)))
+            break
         if n%1000 == 0: 
-            printProgressBar(n, max, str(n) + '(' + hex(n).lstrip('0x').upper() + '-' +  num + ')/' + str(max))
+            #printProgressBar(n, max, str(n) + '(' + hex(n).lstrip('0x').upper() + '-' +  num + ')/' + str(max))
+            printProgressBar(n, max, hexvb.decode() + '                                 ')
 
     printProgressBar(max, max, 'Complete                                                         ')
     if n == max: 
-        Write("No valid keys found")
+        Write("S63/OutputValues.txt","No valid keys found")
         print("No valid keys found")
     print('')
 
@@ -154,6 +74,7 @@ def unitTest(): #unit tests - encrypt
     if decrypt('3130313231', '66B5CBFDF7E4139D')[0] != '3132333435': print("Test 4 Failed") 
     if decrypt('10121', '66B5CBFDF7E4139D')[0] != '3132333435': print("Test 5 Failed",decrypt('10121', '66B5CBFDF7E4139D'))
     if decrypt('123AB', 'A89D5B77F731DF86')[0] != '4645333231': print("Test 6 Failed",decrypt('123AB', 'A89D5B77F731DF86'))
+    if decrypt('21c21e0f8821', '523BD9B97FBB3A8A')[1] != 'e8a63cd6f2030303': print("Test 5 Failed",decrypt('21c21e0f8821', '523BD9B97FBB3A8A'))
 
     #unit test - hexToASCiiPair
     if hexToASCiiPair('123AB') != '3132334142': print("Test 7 Failed",hexToASCiiPair('123AB'))  
@@ -180,31 +101,66 @@ def unitTest(): #unit tests - encrypt
 
 unitTest()
 
+clearConsole()
+
 # From S=63 docs
 #M_KEY: 65825 10121 (3130313231) HW_ID: 12345 (3132333435)
-findM_ID('66B5CBFDF7E4139D','From S63 docs')
+#findM_ID('66B5CBFDF7E4139D','From S63 docs',0x10121)
 
 # From S=63 docs
 #M_KEY: 624485 98765 (3938373635) HW_ID: 12348 (3132333438)
-findM_ID('73871727080876A07E450C043031','From S63 docs')
+#findM_ID('73871727080876A07E450C043031','From S63 docs',0x98765)
 
 #M_KEY: 703710 0xabcde (373033373130) HW_ID: EDCBA (4544434241)
-findM_ID('C0AD0FF2ACE832EB','Derived')
+#findM_ID('C0AD0FF2ACE832EB','Derived',0xABCDE)
 
 #SAM ChartPilot 1100 Version 6.14 Build 69
 #E7A63F22C8B0B9CD CAF68D32 3134
-findM_ID('E7A63F22C8B0B9CDCAF68D323134','SAM ChartPilot 1100')
+#M_KEY: 84953 HW_ID: ae31411501
+#findM_ID('E7A63F22C8B0B9CDCAF68D323134','SAM ChartPilot 1100',0x84953)
 
 #encry_HW_ID = '057DA7ADC227C0D0'
-findM_ID('057DA7ADC227C0D0','Derived')
+#M_KEY: 45109 HW_ID: b953ceb5ee
+#findM_ID('057DA7ADC227C0D0','Derived',0x45109)
 
 #encry_HW_ID = '7D88AC20B915A587'
-findM_ID('7D88AC20B915A587','Derived')
+#M_KEY: 83011 HW_ID: 0130584096
+#findM_ID('7D88AC20B915A587','Derived',0x83011)
 
 # Test from doc (might not be real...)
 # M_KEY: 0x98765 (363234343835) HW_ID: 74568 (3132333438)
-findM_ID('73871727080876A0','Test from doc (might not be real...)')# A79AB
+#findM_ID('73871727080876A0','Test from doc (might not be real...)',0x98765)# A79AB
 
-findM_ID('51ABA63B31D3BD5B','Derived')
-findM_ID('EB3C7E109D3A6064','Derived')
+#
+#findM_ID('51ABA63B31D3BD5B','Derived')
 
+#
+#findM_ID('EB3C7E109D3A6064','Derived')
+
+#HMS QUEEN ELIZABETH
+#D6CE30E1B2E876229DEA86BC3234
+#M_KEY: 201351 31287 (3331323837) HW_ID: 28701 (3238373031)
+#findM_ID('D6CE30E1B2E87622','QNLZ',0x31287)
+
+#HMS DEFENDER
+#M_KEY: 21c21e0f88
+#981A73CCF40AFFB7B432B3413837
+#findM_ID('981A73CCF40AFFB7','HMS DEFENDER',0x10273)
+
+#HMS TAMAR
+#M_KEY: b5e38e80ac
+#7B5B008E5F7A7A8816C2B3B63837
+#findM_ID('7B5B008E5F7A7A88','HMS TAMAR',0x1000)
+
+lines = []
+with open('S63/Data/User Permits2.txt') as f:
+    lines = f.readlines()
+
+user = ''
+
+for line in lines:
+    if line == '\n': continue
+    if line[:1] == '#':
+        user = line  
+        continue
+    findM_ID(line,user[1:-1],0x1000)

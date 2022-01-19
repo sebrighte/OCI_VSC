@@ -1,0 +1,48 @@
+-----------------------------------
+Start Scan D6CE30E1B2E87622 (HMS QUEEN ELIZABETH)
+M_KEY:31287 HW_ID:3238373031
+-----------------------------------
+Start Scan 981A73CCF40AFFB7 (HMS DEFENDER)
+M_KEY:10273 HW_ID:21c21e0f88
+-----------------------------------
+Start Scan 34F81C5329F1D842 (HMS DIAMOND)
+M_KEY:10273 HW_ID:52d36367a7
+-----------------------------------
+Start Scan 1A1979E6483A3333 (HMS KENT)
+M_KEY:10273 HW_ID:05a1e55359
+-----------------------------------
+Start Scan 919752C19103823D (HMS RICHMOND)
+M_KEY:10273 HW_ID:19c1b45166
+-----------------------------------
+Start Scan 993408901215EABD (RFA FORT VICTORIA)
+M_KEY:10273 HW_ID:0e51052ec2
+-----------------------------------
+Start Scan EFAF029B4E5114A0 (RFA TIDESPRING)
+M_KEY:10273 HW_ID:5ff5ff23d3
+-----------------------------------
+Start Scan 7B5B008E5F7A7A88 (HMS TAMAR (WAIT))
+M_KEY:10273 HW_ID:b5e38e80ac
+-----------------------------------
+Start Scan C4661C3EE8EA8646 (HMS SPEY (WAIT))
+M_KEY:10273 HW_ID:0c00cfe819
+-----------------------------------
+Start Scan 958FCDCE392D3DFD (Lt Cdr Aaron Revell)
+M_KEY:10273 HW_ID:d9f90fa57d
+-----------------------------------
+Start Scan 954C9F8F1E5262F0 (Lt Cdr Aaron Revell)
+M_KEY:10273 HW_ID:21be2b6d5d
+-----------------------------------
+Start Scan 9F911516A00FFFEA (Lt Cdr Aaron Revell)
+M_KEY:10273 HW_ID:b9a6b45d01
+-----------------------------------
+Start Scan 970274534EC673C9 (EVERTSEN)
+M_KEY:10273 HW_ID:75ebe768e1
+-----------------------------------
+Start Scan 30C9038C8413C378 (UKHO User Permit (IL3))
+M_KEY:10273 HW_ID:d9ab955877
+-----------------------------------
+Start Scan 0E4923191643D133 (UKHO User Permit (IL5))
+M_KEY:10273 HW_ID:379bf29052
+-----------------------------------
+Start Scan 00FC889288649CE4 (CHRIS POLLEY)
+M_KEY:10273 HW_ID:98686c41a0

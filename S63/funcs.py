@@ -2,9 +2,60 @@
 import blowfish, sys, os
 
 def clearConsole():
+    """This function clears all text from the console"""
     import os
     clear = lambda: os.system('clear')
     clear()
+
+def encrypt(id,val):
+    if len(id) == 5: id = hexToASCiiPair(id)
+    if len(val) == 5: val = hexToASCiiPair(val)
+    a = int((16-len(val))/2)
+    for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')
+    cipher = blowfish.Cipher(bytes.fromhex(str(id)))
+    block = bytes.fromhex(str(val))
+    retBlock = (cipher.encrypt_block(block).hex()).upper()
+    return (retBlock, id, block)
+
+def decrypt(id,val):
+    try:
+        if len(id) == 5: id = hexToASCiiPair(id)
+        if len(val) == 5: val = hexToASCiiPair(val)
+        b = bytes.fromhex(str(id))
+        cipher = blowfish.Cipher(bytes.fromhex(str(id)))
+        block = cipher.decrypt_block(bytes.fromhex(val))
+        block = block.hex()
+        # remove padding if last value less than 8
+        b = int(block[-2:])
+        if b <= 8:
+            block2 = block[:-b*2]
+        if block2 == '': return (0, block)
+        return (block2, block)
+    except:
+        return (0, block)
+        
+def ASCiiPairToHex(val, len = 5):
+    try:
+        # remove padding if last value less than 8
+        l = findLen(val)
+        b = int(val[-2:])
+        if b <= l-2:
+            val = val[:-b*2]
+        i = ""
+        l = findLen(val) # recalc on new val
+        #if l < 10: return hex(int(0))
+        for n in range(0, l, 2):
+            h = val[n:n+2]
+            x = re.search("[3][0-9]|[46][1-6]", h)  
+            if not x: 
+                #print(h)
+                return hex(int(0))
+            b = binascii.unhexlify(h)
+            c = str(b, 'utf-8')
+            i = i + c
+        return hex(int(i, 16)).lstrip('0x').upper()
+    except:
+        return hex(int(0))
 
 def bytes_to_int(bytesIn):
     #try:
@@ -18,6 +69,12 @@ def bytes_to_int(bytesIn):
         byteObject = bytes(bytesIn2)
         return int.from_bytes(byteObject,"big")
     #except: return 0
+
+def Write(filename,strVal,cls=False):
+    if os.path.exists(filename) and cls==True:
+        os.remove(filename)
+    with open(filename, "a") as file_object:
+        file_object.write(strVal + '\n')
 
 def clearDir(path):
     import glob
@@ -40,12 +97,18 @@ def WriteBinary(filename,binaryVal,append = False):
     #    os.remove(filename)
     file = open(filename, "wb")
     file.write(binaryVal)
-    file.close()        
+    file.close()  
 
-def pad(val):
+def findLen(str):
+    counter = 0    
+    for i in str:
+        counter += 1
+    return counter      
+
+def pad(val,pad = 8):
     """This function pads a hex value to be 8 bytes in length"""
     val = val.lstrip('0x')
-    a = int((16-len(val))/2)
+    a = int(( (pad*2) -len(val))/2)
     for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')
     return val
 
@@ -63,7 +126,7 @@ def decryptId(id, val, padVal = True, depadResult = True):
         return block
     except:
         return (-1)
-        
+
 def decryptCy(cipher, val, padVal = True, depadResult = True):
     try:
         if padVal: val = pad(val)
@@ -75,9 +138,10 @@ def decryptCy(cipher, val, padVal = True, depadResult = True):
 
 def hexToASCiiPair(val):
     hexv = ""
-    val = val.lstrip('0x').upper()
+    val = val.lstrip('0x')#.upper()
     for i in val:
-        hexv = hexv + str(hex(ord(str(i))).lstrip('0x'))
+        s = str(hex(ord(str(i))).lstrip('0x'))
+        hexv = hexv + s
     #hexv = hexv + hexv [:2]
     return hexv
 
