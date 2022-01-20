@@ -14,6 +14,19 @@ filename = "S63/OutputValues.txt"
 if os.path.exists(filename):
     os.remove(filename)
 
+def psFromFile(filename):
+    lines = []
+    with open('S63/Data/User Permits2.txt') as f:
+        lines = f.readlines()
+
+    user = ''
+    for line in lines:
+        if line == '\n': continue
+        if line[:1] == '#':
+            user = line  
+            continue
+        findM_ID(line,user[1:-1],0x1000)
+
 def printProgressBar(i,max,postText):
     n_bar =10 #size of progress bar
     j= i/max
@@ -64,7 +77,7 @@ def unitTest(): #unit tests - encrypt
     if encrypt('123AB', 'FE321')[0] != 'A89D5B77F731DF86': print("Test 2 Failed", encrypt('123AB', 'FE321'))
     if encrypt('3132334142', '4645333231')[0] != 'A89D5B77F731DF86': print("Test 3b Failed", encrypt('3132334142', '4645333231'))
 
-    if encrypt('abcde', 'EDCBA')[0] != 'C0AD0FF2ACE832EB': print("Test 3 Failed", encrypt('abcde', 'EDCBA'))
+    if encrypt('ABCDE', 'EDCBA')[0] != 'C0AD0FF2ACE832EB': print("Test 3 Failed", encrypt('abcde', 'EDCBA'))
     if encrypt('4142434445', '4544434241')[0] != 'C0AD0FF2ACE832EB': print("Test 3d Failed", encrypt('4142434445', '4544434241'))
 
     if encrypt('98765', '12348')[0] != '73871727080876A0': print("Test 3b Failed", encrypt('98765', '12348'))
@@ -81,15 +94,15 @@ def unitTest(): #unit tests - encrypt
     if hexToASCiiPair('0x123AB') != '3132334142': print("Test 8 Failed",hexToASCiiPair('0x123AB')) 
     if hexToASCiiPair('10121') != '3130313231': print("Test 9 Failed",hexToASCiiPair('10121')) 
     if hexToASCiiPair('0x10121') != '3130313231': print("Test 9a Failed",hexToASCiiPair('0x10121')) 
-    if hexToASCiiPair('0x254de') != '3235344445': print("Test 9b Failed",hexToASCiiPair('0x254de')) 
+    if hexToASCiiPair('0x254de') != '3235346465': print("Test 9b Failed",hexToASCiiPair('0x254de')) 
     if hexToASCiiPair('0x254DE') != '3235344445': print("Test 9c Failed",hexToASCiiPair('3235344445')) 
-    if hexToASCiiPair('123') != '3132330202': print("Test 10 Failed",hexToASCiiPair('0x123')) 
+    if hexToASCiiPair('123') != '313233': print("Test 10 Failed",hexToASCiiPair('0x123')) 
 
     #unit test - ASCiiPairToHex
-    if ASCiiPairToHex('3130313231') != '10121': print("Test 11 Failed",ASCiiPairToHex('3130313231')) 
-    if ASCiiPairToHex('3130310202') != '101': print("Test 12 Failed",ASCiiPairToHex('3130310202')) 
-    if ASCiiPairToHex('4646464646') != 'FFFFF': print("Test 13 Failed",ASCiiPairToHex('4646464646')) 
-    if ASCiiPairToHex('3104040404') != '1': print("Test 14 Failed",ASCiiPairToHex('3104040404')) 
+    # if ASCiiPairToHex('3130313231') != '10121': print("Test 11 Failed",ASCiiPairToHex('3130313231')) 
+    # if ASCiiPairToHex('3130310202') != '101': print("Test 12 Failed",ASCiiPairToHex('3130310202')) 
+    # if ASCiiPairToHex('4646464646') != 'FFFFF': print("Test 13 Failed",ASCiiPairToHex('4646464646')) 
+    # if ASCiiPairToHex('3104040404') != '1': print("Test 14 Failed",ASCiiPairToHex('3104040404')) 
 
     #unit test - CreateUserPermit
     if str(CreateUserPermit('10121','12345','3130')) != '66B5CBFDF7E4139D5B6086C23130': print("Test Failed" , CreateUserPermit('10121','12345','3130'))
@@ -99,68 +112,60 @@ def unitTest(): #unit tests - encrypt
 
 #---------------------------------------------------------------------------------------------------------------
 
-unitTest()
+def upTest():
+    # From S=63 docs
+    #M_KEY: 65825 10121 (3130313231) HW_ID: 12345 (3132333435)
+    findM_ID('66B5CBFDF7E4139D','From S63 docs',0x10121)
+
+    # From S=63 docs
+    #M_KEY: 624485 98765 (3938373635) HW_ID: 12348 (3132333438)
+    findM_ID('73871727080876A07E450C043031','From S63 docs',0x98765)
+
+    #M_KEY: 703710 0xabcde (373033373130) HW_ID: EDCBA (4544434241)
+    findM_ID('C0AD0FF2ACE832EB','Derived',0xABCDE)
+
+    #SAM ChartPilot 1100 Version 6.14 Build 69
+    #E7A63F22C8B0B9CD CAF68D32 3134
+    #M_KEY: 84953 HW_ID: ae31411501
+    findM_ID('E7A63F22C8B0B9CDCAF68D323134','SAM ChartPilot 1100',0x84953)
+
+    #encry_HW_ID = '057DA7ADC227C0D0'
+    #M_KEY: 45109 HW_ID: b953ceb5ee
+    findM_ID('057DA7ADC227C0D0','Derived',0x45109)
+
+    #encry_HW_ID = '7D88AC20B915A587'
+    #M_KEY: 83011 HW_ID: 0130584096
+    findM_ID('7D88AC20B915A587','Derived',0x83011)
+
+    # Test from doc (might not be real...)
+    # M_KEY: 0x98765 (363234343835) HW_ID: 74568 (3132333438)
+    findM_ID('73871727080876A0','Test from doc (might not be real...)',0x98765)# A79AB
+
+    #
+    findM_ID('51ABA63B31D3BD5B','Derived',0x24317)
+
+    #
+    findM_ID('EB3C7E109D3A6064','Derived',0x16410)
+
+    #HMS QUEEN ELIZABETH
+    #D6CE30E1B2E876229DEA86BC3234
+    #M_KEY: 201351 31287 (3331323837) HW_ID: 28701 (3238373031)
+    findM_ID('D6CE30E1B2E87622','QNLZ',0x31287)
+
+    #HMS DEFENDER
+    #M_KEY: 21c21e0f88
+    #981A73CCF40AFFB7B432B3413837
+    findM_ID('981A73CCF40AFFB7','HMS DEFENDER',0x10273)
+
+    #HMS TAMAR
+    #M_KEY: b5e38e80ac
+    #7B5B008E5F7A7A8816C2B3B63837
+    findM_ID('7B5B008E5F7A7A88','HMS TAMAR',0x10273)
 
 clearConsole()
 
-# From S=63 docs
-#M_KEY: 65825 10121 (3130313231) HW_ID: 12345 (3132333435)
-#findM_ID('66B5CBFDF7E4139D','From S63 docs',0x10121)
+unitTest()
+#upTest()
 
-# From S=63 docs
-#M_KEY: 624485 98765 (3938373635) HW_ID: 12348 (3132333438)
-#findM_ID('73871727080876A07E450C043031','From S63 docs',0x98765)
 
-#M_KEY: 703710 0xabcde (373033373130) HW_ID: EDCBA (4544434241)
-#findM_ID('C0AD0FF2ACE832EB','Derived',0xABCDE)
 
-#SAM ChartPilot 1100 Version 6.14 Build 69
-#E7A63F22C8B0B9CD CAF68D32 3134
-#M_KEY: 84953 HW_ID: ae31411501
-#findM_ID('E7A63F22C8B0B9CDCAF68D323134','SAM ChartPilot 1100',0x84953)
-
-#encry_HW_ID = '057DA7ADC227C0D0'
-#M_KEY: 45109 HW_ID: b953ceb5ee
-#findM_ID('057DA7ADC227C0D0','Derived',0x45109)
-
-#encry_HW_ID = '7D88AC20B915A587'
-#M_KEY: 83011 HW_ID: 0130584096
-#findM_ID('7D88AC20B915A587','Derived',0x83011)
-
-# Test from doc (might not be real...)
-# M_KEY: 0x98765 (363234343835) HW_ID: 74568 (3132333438)
-#findM_ID('73871727080876A0','Test from doc (might not be real...)',0x98765)# A79AB
-
-#
-#findM_ID('51ABA63B31D3BD5B','Derived')
-
-#
-#findM_ID('EB3C7E109D3A6064','Derived')
-
-#HMS QUEEN ELIZABETH
-#D6CE30E1B2E876229DEA86BC3234
-#M_KEY: 201351 31287 (3331323837) HW_ID: 28701 (3238373031)
-#findM_ID('D6CE30E1B2E87622','QNLZ',0x31287)
-
-#HMS DEFENDER
-#M_KEY: 21c21e0f88
-#981A73CCF40AFFB7B432B3413837
-#findM_ID('981A73CCF40AFFB7','HMS DEFENDER',0x10273)
-
-#HMS TAMAR
-#M_KEY: b5e38e80ac
-#7B5B008E5F7A7A8816C2B3B63837
-#findM_ID('7B5B008E5F7A7A88','HMS TAMAR',0x1000)
-
-lines = []
-with open('S63/Data/User Permits2.txt') as f:
-    lines = f.readlines()
-
-user = ''
-
-for line in lines:
-    if line == '\n': continue
-    if line[:1] == '#':
-        user = line  
-        continue
-    findM_ID(line,user[1:-1],0x1000)
