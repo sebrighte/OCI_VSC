@@ -51,9 +51,11 @@ def pad(val,pad = 8):
 
 def depad(block):
     "This function removes padding"
-    b = int(block[-2:])
-    if b <= 16: block = block[:-b*2]
-    return block
+    try:
+        b = int(block[-2:])
+        if b <= 16: block = block[:-b*2]
+        return block
+    except: return 'ERR'
 
 def printProgressBar(i,max,postText, size = 10):
     "This function prints a progress bar on the console"
@@ -63,6 +65,12 @@ def printProgressBar(i,max,postText, size = 10):
     sys.stdout.write(f"[{'=' * int(n_bar * j):{n_bar}s}] {int(100 * j)}%  {postText}")
     sys.stdout.flush()
     
+def clearDir(path):
+    import glob
+    files = glob.glob(path)
+    for f in files:
+        os.remove(f)
+
 # def decrypt(id,val):
 #     try:
 #         if len(id) == 5: id = hexToASCiiPair(id)
@@ -117,11 +125,7 @@ def printProgressBar(i,max,postText, size = 10):
 #     #except: return 0
 
 
-# def clearDir(path):
-#     import glob
-#     files = glob.glob(path)
-#     for f in files:
-#         os.remove(f)
+
 
 # def IntToTime(intVal):
 #     import time
@@ -133,12 +137,12 @@ def printProgressBar(i,max,postText, size = 10):
 #     timestamp = datetime.datetime.fromtimestamp(intVal)
 #     return timestamp.strftime('%Y-%m-%d %H:%M:%S')
 
-# def WriteBinary(filename,binaryVal,append = False):
-#     #if os.path.exists(filename) or not append:
-#     #    os.remove(filename)
-#     file = open(filename, "wb")
-#     file.write(binaryVal)
-#     file.close()  
+def WriteBinary(filename,binaryVal,append = False):
+    #if os.path.exists(filename) or not append:
+    #    os.remove(filename)
+    file = open(filename, "wb")
+    file.write(binaryVal)
+    file.close()  
 
 # def findLen(str):
 #     counter = 0    

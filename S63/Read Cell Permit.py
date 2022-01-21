@@ -5,6 +5,8 @@ clearConsole()
 
 min= 0x10000
 max = 0xFFFFF
+HW_ID = ''
+lines = []
 
 def printProgressBar(i,max,postText):
     n_bar =10 #size of progress bar
@@ -54,76 +56,26 @@ def getCellKey(eck, text = 'Nothing...', pmin = 0x10000):
         return 0
     print('')
 
-# HW_ID 3132333438 (12348) 5 bytes in hexadecimal
-# CK1 C1CB518E9C 5 bytes in hexadecimal
-# CK2 421571CC66 5 bytes in hexadecimal
-# Cell Name NO4D0613.000 Valid S-57 cell name including file extension
-# Expiry Date 20000830 Format YYYYMMDD
-#NO4D0613 20000830 BEB9BFE3C7C6CE68 B16411FD09F9698 2795C77B204F54D48
-CellPrtmit = 'NO4D061320000830BEB9BFE3C7C6CE68B16411FD09F96982795C77B204F54D48' 
-
-#CellPrtmit = 'GB40162A20181231F81AC653B0AB63B0F81AC653B0AB63B09DE31FB609E17492,0,1,GB,Comment'
-#GB40162A 20181231 F81AC653B0AB63B0 F81AC653B0AB63B0 9DE31FB609E17492,0,1,GB,'
-
-#CellPrtmit = 'GB1000042018123164B51D24FB77ADB364B51D24FB77ADB390432733F4F4D403,0,1,GB,Comment'
-#ID = '12345'
-
-#QNLZ
-#M_KEY: 201351 31287 (3331323837) HW_ID: 28701 (3238373031)
-#GB307702 20220331 4209D1C0F1FEA71D 4209D1C0F1FEA71D 08CE6364D8F84166
-#CellPrtmit = 'GB307702202203314209D1C0F1FEA71D4209D1C0F1FEA71D08CE6364D8F84166,0,2,GB,'
-#CellPrtmit = 'NO4D061320000830BEB9BFE3C7C6CE68B16411FD09F96982795C77B204F54D48' 
-#ID = '28701'
-HW_ID = ''
-#CK1 == E8A63CD6F2??
-
-#DFDR
-#GB307702 20220331 523BD9B97FBB3A8A 523BD9B97FBB3A8A8 C1EAC8F89FD1451,0,2,GB,
-#M_KEY: 
-#CellPrtmit = 'GB30770220220331523BD9B97FBB3A8A523BD9B97FBB3A8A8C1EAC8F89FD1451,0,2,GB,'
-#ID = ''
-#CK1 == E8A63CD6F2??
-
-# Manufacturer ID: (M_ID) = 10 (or 3130 hexadecimal)Manufacturer 
-# Key: (M_KEY) = 10121 (or 3130313231 hexadecimal)Hardware 
-# ID: (HW_ID) = 12345 (or 3132333435 hexadecimal)
-# USERPERMIT = 66B5CBFDF7E4139D5B6086C23130
-
-# HW_ID = hexToASCiiPair(ID) #'3132333435' #5 bytes in hexadecimal
-x =  bytes.fromhex('21c21e0f88')
-
-lines = []
-with open('S63/Data/DFDR Permit.txt') as f:
+with open('S63/Data/QNLZ Permit.txt') as f:
     lines = f.readlines()
 
-user = ''
 pos = 0x10000
 for line in lines:
-    chr1 = line[:1]
-    if chr1 == ':':continue
-    if chr1 == '#':
-        pos = int(line[1:], base=16)
+    if line[:1] == ':':
+        print(f"MET_D: {line[1:-1]}")
         continue
-    CellPrtmit = line
-    #CellPrtmit = 'GB30770220220331523BD9B97FBB3A8A523BD9B97FBB3A8A8C1EAC8F89FD1451,0,2,GB,'
-    Cell_Name = CellPrtmit[0:8]
-    Expiry_Date = CellPrtmit[8:16]
-    ECK1 = CellPrtmit[16:32]
-    ECK2 = CellPrtmit[32:48]
-    CRC = CellPrtmit[48:64]
-    ServiceLevelIndicator = CellPrtmit[65:66]
-    EditionNumber = CellPrtmit[67:68]
-    DataServerID = CellPrtmit[69:71]
-    Comment = CellPrtmit[72:]
+    elif line[:1] == '#':
+        HW_ID = line[1:]
+        print(f"HW_ID: {line[1:-1]}")
+        continue
 
     if HW_ID == '':
-        HW_ID = getCellKey(ECK1,f.name,pos)
+        HW_ID = getCellKey(line[16:32],f.name,pos)
         if HW_ID == 0: 
             print("No valid keys found")
             break
 
-    cipher = blowfish.Cipher(HW_ID.encode())
-    CK1 = decryptCy(cipher, ECK1).upper()
-    CK2 = decryptCy(cipher, ECK2).upper()
+    CK1 = GetCellKeyfromCellPermit(HW_ID,line,True).upper()
+    CK2 = GetCellKeyfromCellPermit(HW_ID,line,False).upper()
 
-    print("CK1, CK2:",CK1, CK2)
+    print(f"Cell:{line[0:8]} Ed:{line[67:68]} CK1:{CK1} CK2:{CK2}")
