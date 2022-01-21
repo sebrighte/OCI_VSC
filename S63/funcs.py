@@ -2,15 +2,15 @@
 import blowfish
 import os
 import sys
-# #, sys, os
 
 def clearConsole():
-    """This function clears all text from the console"""
+    "This function clears all text from the console"
     import os
     clear = lambda: os.system('clear')
     clear()
 
 def GetCellKeyfromCellPermit(HW_ID,PermitLine,ECK1 = True):
+    "This function decrypts the ECK1/2 with the HW_ID provided"
     ECK = PermitLine[16:32]
     if not ECK1: ECK = PermitLine[32:48]
     cipher = blowfish.Cipher(bytearray.fromhex(HW_ID + HW_ID[0:2]))
@@ -18,8 +18,7 @@ def GetCellKeyfromCellPermit(HW_ID,PermitLine,ECK1 = True):
     return depad(cipher.decrypt_block(bytes.fromhex(ECK)).hex())
 
 def decryptENC(enc_path, cypher, dest_path, delAllFiles = False):
-    "Returns True if decrypted file is created"
-
+    "Returns True if decrypted file is successfully created"
     try:
         file = open(enc_path, "rb")
         bytesRead = file.read()
@@ -44,7 +43,7 @@ def Write(filename,strVal,cls=False):
         file_object.write(strVal + '\n')
 
 def pad(val,pad = 8):
-    "This function pads a hex value to be 8 bytes in length"
+    "This function pads a hex value to be n (default 8) bytes in length"
     val = val.lstrip('0x')
     a = int(( (pad*2) -len(val))/2)
     for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')
@@ -56,8 +55,9 @@ def depad(block):
     if b <= 16: block = block[:-b*2]
     return block
 
-def printProgressBar(i,max,postText):
-    n_bar =10 #size of progress bar
+def printProgressBar(i,max,postText, size = 10):
+    "This function prints a progress bar on the console"
+    n_bar = size #size of progress bar
     j= i/max
     sys.stdout.write('\r')
     sys.stdout.write(f"[{'=' * int(n_bar * j):{n_bar}s}] {int(100 * j)}%  {postText}")

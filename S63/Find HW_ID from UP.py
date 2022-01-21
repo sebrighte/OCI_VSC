@@ -15,8 +15,7 @@ if os.path.exists(filename):
     os.remove(filename)
 
 def encrypt(id,val):
-    if len(id) == 5: id = hexToASCiiPair(id)
-    if len(val) == 5: val = hexToASCiiPair(val)
+    "Encrypt 'val'' passing id in hex FFFFFFFFFF e.g. 3130313231"
     a = int((16-len(val))/2)
     for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')
     cipher = blowfish.Cipher(bytes.fromhex(str(id)))
@@ -26,20 +25,11 @@ def encrypt(id,val):
 
 def decrypt(id,val):
     try:
-        if len(id) == 5: id = hexToASCiiPair(id)
-        if len(val) == 5: val = hexToASCiiPair(val)
-        b = bytes.fromhex(str(id))
-        cipher = blowfish.Cipher(bytes.fromhex(str(id)))
-        block = cipher.decrypt_block(bytes.fromhex(val))
-        block = block.hex()
-        # remove padding if last value less than 8
-        b = int(block[-2:])
-        if b <= 8:
-            block2 = block[:-b*2]
-        if block2 == '': return (0, block)
-        return (block2, block)
+        cipher = blowfish.Cipher(bytearray.fromhex(id))
+        val = pad(val)
+        return depad(cipher.decrypt_block(bytes.fromhex(val)).hex())
     except:
-        return (0, block)
+        return 0
 
 def hexToASCiiPair(val):
     hexv = ""
@@ -105,23 +95,14 @@ def CreateUserPermit(M_KEY,HW_ID,M_ID):
     return (ehw_id + hex_value.lstrip('0x') + M_ID).upper()
     
 def unitTest(): #unit tests - encrypt 
-    if encrypt('10121', '12345')[0] != '66B5CBFDF7E4139D': print("Test 1 Failed", encrypt('10121', '12345'))
     if encrypt('3130313231', '3132333435')[0] != '66B5CBFDF7E4139D': print("Test 1 Failed", encrypt('3130313231', '3132333435')[0]) 
-
-    if encrypt('123AB', 'FE321')[0] != 'A89D5B77F731DF86': print("Test 2 Failed", encrypt('123AB', 'FE321'))
     if encrypt('3132334142', '4645333231')[0] != 'A89D5B77F731DF86': print("Test 3b Failed", encrypt('3132334142', '4645333231'))
-
-    if encrypt('ABCDE', 'EDCBA')[0] != 'C0AD0FF2ACE832EB': print("Test 3 Failed", encrypt('abcde', 'EDCBA'))
     if encrypt('4142434445', '4544434241')[0] != 'C0AD0FF2ACE832EB': print("Test 3d Failed", encrypt('4142434445', '4544434241'))
-
-    if encrypt('98765', '12348')[0] != '73871727080876A0': print("Test 3b Failed", encrypt('98765', '12348'))
     if encrypt('3938373635', '3132333438')[0] != '73871727080876A0': print("Test 3e Failed", encrypt('3938373635', '3132333438'))
 
     #unit tests - decrypt 
-    if decrypt('3130313231', '66B5CBFDF7E4139D')[0] != '3132333435': print("Test 4 Failed") 
-    if decrypt('10121', '66B5CBFDF7E4139D')[0] != '3132333435': print("Test 5 Failed",decrypt('10121', '66B5CBFDF7E4139D'))
-    if decrypt('123AB', 'A89D5B77F731DF86')[0] != '4645333231': print("Test 6 Failed",decrypt('123AB', 'A89D5B77F731DF86'))
-    if decrypt('21c21e0f8821', '523BD9B97FBB3A8A')[1] != 'e8a63cd6f2030303': print("Test 5 Failed",decrypt('21c21e0f8821', '523BD9B97FBB3A8A'))
+    if decrypt('3130313231', '66B5CBFDF7E4139D') != '3132333435': print("Test 4 Failed") 
+    if decrypt('21c21e0f8821', '523BD9B97FBB3A8A') != 'e8a63cd6f2': print("Test 5 Failed",decrypt('21c21e0f8821', '523BD9B97FBB3A8A'))
 
     #unit test - hexToASCiiPair
     # if hexToASCiiPair('123AB') != '3132334142': print("Test 7 Failed",hexToASCiiPair('123AB'))  
@@ -139,7 +120,6 @@ def unitTest(): #unit tests - encrypt
     # if ASCiiPairToHex('3104040404') != '1': print("Test 14 Failed",ASCiiPairToHex('3104040404')) 
 
     #unit test - CreateUserPermit
-    if str(CreateUserPermit('10121','12345','3130')) != '66B5CBFDF7E4139D5B6086C23130': print("Test Failed" , CreateUserPermit('10121','12345','3130'))
     if str(CreateUserPermit('3130313231','3132333435','3130')) != '66B5CBFDF7E4139D5B6086C23130': print("Test Failed" , CreateUserPermit('3130313231','3132333435','3130'))
 
     print("Tests Complete")
@@ -196,10 +176,9 @@ def unitUpTest():
 
 clearConsole()
 
-unitTest()
-unitUpTest()
+#unitTest()
+#unitUpTest()
 
-#findM_ID('981A73CCF40AFFB7','HMS DEFENDER',0x10273)
 
 
 
