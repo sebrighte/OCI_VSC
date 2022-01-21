@@ -1,9 +1,9 @@
 -----------------------------------
 Start Scan D6CE30E1B2E87622 (HMS QUEEN ELIZABETH)
-M_KEY:31287 HW_ID:3238373031
+M_KEY:31287 HW_ID:3238373031 Hex:0x28701
 -----------------------------------
 Start Scan 981A73CCF40AFFB7 (HMS DEFENDER)
-M_KEY:10273 HW_ID:21c21e0f88
+M_KEY:10273 HW_ID:21c21e0f88 
 -----------------------------------
 Start Scan 34F81C5329F1D842 (HMS DIAMOND)
 M_KEY:10273 HW_ID:52d36367a7

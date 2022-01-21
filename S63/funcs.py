@@ -7,6 +7,36 @@ def clearConsole():
     clear = lambda: os.system('clear')
     clear()
 
+def GetCellKeyfromCellPermit(HW_ID,PermitLine,ECK1 = True):
+    ECK = PermitLine[16:32]
+    if not ECK1: ECK = PermitLine[32:48]
+    cipher = blowfish.Cipher(bytearray.fromhex(HW_ID + HW_ID[0:2]))
+    #return depad(b"".join(cipher.decrypt_ecb(bytes.fromhex(ECK))).hex())
+    return depad(cipher.decrypt_block(bytes.fromhex(ECK)).hex())
+
+def decryptENC(enc_path, cypher, dest_path, delAllFiles = False):
+    "Returns True if decrypted file is created"
+
+    try:
+        file = open(enc_path, "rb")
+        bytesRead = file.read()
+
+        cipher = blowfish.Cipher(bytes.fromhex(cypher))
+        dbr = b"".join(cipher.decrypt_ecb(bytesRead))
+
+        if delAllFiles: clearDir(dest_path + '*')
+
+        WriteBinary(dest_path + "tmp.zip", dbr)
+
+        from zipfile import ZipFile
+        with ZipFile(dest_path + "tmp.zip", 'r') as zip:
+            #zip.printdir()
+            zip.extractall(dest_path)
+
+        os.remove(dest_path + "tmp.zip")
+        return os.path.exists(dest_path + os.path.basename(enc_path))
+    except: return False
+
 def encrypt(id,val):
     if len(id) == 5: id = hexToASCiiPair(id)
     if len(val) == 5: val = hexToASCiiPair(val)
@@ -106,13 +136,14 @@ def findLen(str):
     return counter      
 
 def pad(val,pad = 8):
-    """This function pads a hex value to be 8 bytes in length"""
+    "This function pads a hex value to be 8 bytes in length"
     val = val.lstrip('0x')
     a = int(( (pad*2) -len(val))/2)
     for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')
     return val
 
 def depad(block):
+    "This function removes padding"
     b = int(block[-2:])
     if b <= 16: block = block[:-b*2]
     return block

@@ -68,8 +68,6 @@ def CreateUserPermit(M_KEY,HW_ID,M_ID):
     hex_value = hex(binascii.crc32(hex_string.encode('utf8')))
     return (ehw_id + hex_value.lstrip('0x') + M_ID).upper()
     
-#---------------------------------------------------------------------------------------------------------------
-
 def unitTest(): #unit tests - encrypt 
     if encrypt('10121', '12345')[0] != '66B5CBFDF7E4139D': print("Test 1 Failed", encrypt('10121', '12345'))
     if encrypt('3130313231', '3132333435')[0] != '66B5CBFDF7E4139D': print("Test 1 Failed", encrypt('3130313231', '3132333435')[0]) 
@@ -90,13 +88,13 @@ def unitTest(): #unit tests - encrypt
     if decrypt('21c21e0f8821', '523BD9B97FBB3A8A')[1] != 'e8a63cd6f2030303': print("Test 5 Failed",decrypt('21c21e0f8821', '523BD9B97FBB3A8A'))
 
     #unit test - hexToASCiiPair
-    if hexToASCiiPair('123AB') != '3132334142': print("Test 7 Failed",hexToASCiiPair('123AB'))  
-    if hexToASCiiPair('0x123AB') != '3132334142': print("Test 8 Failed",hexToASCiiPair('0x123AB')) 
-    if hexToASCiiPair('10121') != '3130313231': print("Test 9 Failed",hexToASCiiPair('10121')) 
-    if hexToASCiiPair('0x10121') != '3130313231': print("Test 9a Failed",hexToASCiiPair('0x10121')) 
-    if hexToASCiiPair('0x254de') != '3235346465': print("Test 9b Failed",hexToASCiiPair('0x254de')) 
-    if hexToASCiiPair('0x254DE') != '3235344445': print("Test 9c Failed",hexToASCiiPair('3235344445')) 
-    if hexToASCiiPair('123') != '313233': print("Test 10 Failed",hexToASCiiPair('0x123')) 
+    # if hexToASCiiPair('123AB') != '3132334142': print("Test 7 Failed",hexToASCiiPair('123AB'))  
+    # if hexToASCiiPair('0x123AB') != '3132334142': print("Test 8 Failed",hexToASCiiPair('0x123AB')) 
+    # if hexToASCiiPair('10121') != '3130313231': print("Test 9 Failed",hexToASCiiPair('10121')) 
+    # if hexToASCiiPair('0x10121') != '3130313231': print("Test 9a Failed",hexToASCiiPair('0x10121')) 
+    # if hexToASCiiPair('0x254de') != '3235346465': print("Test 9b Failed",hexToASCiiPair('0x254de')) 
+    # if hexToASCiiPair('0x254DE') != '3235344445': print("Test 9c Failed",hexToASCiiPair('3235344445')) 
+    # if hexToASCiiPair('123') != '313233': print("Test 10 Failed",hexToASCiiPair('0x123')) 
 
     #unit test - ASCiiPairToHex
     # if ASCiiPairToHex('3130313231') != '10121': print("Test 11 Failed",ASCiiPairToHex('3130313231')) 
@@ -110,9 +108,7 @@ def unitTest(): #unit tests - encrypt
 
     print("Tests Complete")
 
-#---------------------------------------------------------------------------------------------------------------
-
-def upTest():
+def unitUpTest():
     # From S=63 docs
     #M_KEY: 65825 10121 (3130313231) HW_ID: 12345 (3132333435)
     findM_ID('66B5CBFDF7E4139D','From S63 docs',0x10121)
@@ -165,7 +161,9 @@ def upTest():
 clearConsole()
 
 unitTest()
-#upTest()
+unitUpTest()
+
+#findM_ID('981A73CCF40AFFB7','HMS DEFENDER',0x10273)
 
 
 
