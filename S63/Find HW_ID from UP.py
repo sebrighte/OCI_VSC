@@ -14,6 +14,42 @@ filename = "S63/OutputValues.txt"
 if os.path.exists(filename):
     os.remove(filename)
 
+def encrypt(id,val):
+    if len(id) == 5: id = hexToASCiiPair(id)
+    if len(val) == 5: val = hexToASCiiPair(val)
+    a = int((16-len(val))/2)
+    for i in range(a): val += hex(a).lstrip('0x').rjust(2,'0')
+    cipher = blowfish.Cipher(bytes.fromhex(str(id)))
+    block = bytes.fromhex(str(val))
+    retBlock = (cipher.encrypt_block(block).hex()).upper()
+    return (retBlock, id, block)
+
+def decrypt(id,val):
+    try:
+        if len(id) == 5: id = hexToASCiiPair(id)
+        if len(val) == 5: val = hexToASCiiPair(val)
+        b = bytes.fromhex(str(id))
+        cipher = blowfish.Cipher(bytes.fromhex(str(id)))
+        block = cipher.decrypt_block(bytes.fromhex(val))
+        block = block.hex()
+        # remove padding if last value less than 8
+        b = int(block[-2:])
+        if b <= 8:
+            block2 = block[:-b*2]
+        if block2 == '': return (0, block)
+        return (block2, block)
+    except:
+        return (0, block)
+
+def hexToASCiiPair(val):
+    hexv = ""
+    val = val.lstrip('0x')#.upper()
+    for i in val:
+        s = str(hex(ord(str(i))).lstrip('0x'))
+        hexv = hexv + s
+    #hexv = hexv + hexv [:2]
+    return hexv
+
 def psFromFile(filename):
     lines = []
     with open('S63/Data/User Permits2.txt') as f:
