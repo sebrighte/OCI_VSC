@@ -3,11 +3,15 @@
 
 from funcs import *
 import os, re
+
+import time
+
+t = time.process_time()
     
 clearConsole()
 
 #min = 0x12000
-max = 0x100000
+max = 0xFFFFFFFFFF
 #max = 0x10000
 
 def hexToASCiiPair(val,padv):
@@ -50,13 +54,10 @@ def findM_ID(ECK1, start = 0x10000):
     for n in range(start, max):
         hexv = hex(n).lstrip('0x').upper()
         #hexv = hexv.zfill(5)
-        hexv = hexv + hexv[:1]
-
-        #312873
-        #333132383733
-        h = hexToASCiiPair(hexv,4)
-        hb = bytes.fromhex(h)
-        hb = str.encode(hexv)
+        hexv = hexv + hexv[:2]
+        #h = hexToASCiiPair(hexv,4)
+        #hb = bytes.fromhex(hexv)
+        #hb = str.encode(hexv)
         ECK1b = bytes.fromhex(ECK1)
         #b = b'113333'
         #hexv = pad(hexv,5)
@@ -67,18 +68,19 @@ def findM_ID(ECK1, start = 0x10000):
         #bfs = str.encode(hexv)
         #uh = bfs.decode("ascii")
         #cipher = blowfish.Cipher(str.encode(hexv))
-        cipher = blowfish.Cipher(hb)
+        cipher = blowfish.Cipher(bytes.fromhex(hexv))
         #block = cipher.decrypt_block(bytearray.fromhex(h))
         #block = cipher.decrypt_block(ECK1b)
         block = b"".join(cipher.decrypt_ecb(ECK1b))
-        bh = block.hex()
+        #bh = block.hex()
 
         if block.hex()[-6:] == '030303':
             print('\nFound: HW_ID for ' + ':' + hexv[:len(hexv)-1] + ' CK:' + block.hex())
             Write("S63/Data/DecryptPermit.txt", 'Found: HW_ID for ' + hexv[:len(hexv)-1] + ' CK:' + block.hex())
             return n
         if n%1000 == 0: 
-             printProgressBar(n, max, hexv + '(' + hexv[:len(hexv)-1] + ')' + ' [' + str(n) + '/' + str(max) + ']')
+            tm = time.strftime('%d-%H:%M:%S', time.gmtime(time.process_time() - t))
+            printProgressBar(n, max, hexv + '(' + hexv[:len(hexv)-1] + ')' + ' [' + str(n) + '/' + str(max) + '] ' + tm)
 
     Write("S63/Data/DecryptPermit.txt", 'NotFound:' + ECK1)
     print('\nHW_ID NotFound:' + ECK1)
@@ -97,7 +99,7 @@ Write("S63/Data/DecryptPermit.txt", '', True)
 
 #Defender
 #GB307702 20220331 523BD9B97FBB3A8A 523BD9B97FBB3A8A 8C1EAC8F89FD1451
-decryptCK('GB30770220220331523BD9B97FBB3A8A523BD9B97FBB3A8A8C1EAC8F89FD1451,0,2,GB,',0x10000)
+decryptCK('GB30770220220331523BD9B97FBB3A8A523BD9B97FBB3A8A8C1EAC8F89FD1451,0,2,GB,',0x1000000000)
 
 #2504843D47FFF77B
 # cipher = blowfish.Cipher(str.encode('123481'))
