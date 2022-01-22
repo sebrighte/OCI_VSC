@@ -77,10 +77,10 @@ def findM_ID(ECK1, start = 0x10000):
         if block.hex()[-6:] == '030303':
             print('\nFound: HW_ID for ' + ':' + hexv[:len(hexv)-1] + ' CK:' + block.hex())
             Write("S63/Data/DecryptPermit.txt", 'Found: HW_ID for ' + hexv[:len(hexv)-1] + ' CK:' + block.hex())
-            return n
+            #return n
         if n%1000 == 0: 
             tm = time.strftime('%d-%H:%M:%S', time.gmtime(time.process_time() - t))
-            printProgressBar(n, max, hexv + '(' + hexv[:len(hexv)-1] + ')' + ' [' + str(n) + '/' + str(max) + '] ' + tm)
+            printProgressBar(n, max, hexv + '(' + hexv[:len(hexv)-2] + ')' + ' [' + str(n) + '/' + str(max) + '] ' + tm)
 
     Write("S63/Data/DecryptPermit.txt", 'NotFound:' + ECK1)
     print('\nHW_ID NotFound:' + ECK1)
@@ -99,7 +99,7 @@ Write("S63/Data/DecryptPermit.txt", '', True)
 
 #Defender
 #GB307702 20220331 523BD9B97FBB3A8A 523BD9B97FBB3A8A 8C1EAC8F89FD1451
-decryptCK('GB30770220220331523BD9B97FBB3A8A523BD9B97FBB3A8A8C1EAC8F89FD1451,0,2,GB,',0x1000000000)
+decryptCK('GB30770220220331523BD9B97FBB3A8A523BD9B97FBB3A8A8C1EAC8F89FD1451,0,2,GB,',0x010000000)
 
 #2504843D47FFF77B
 # cipher = blowfish.Cipher(str.encode('123481'))
