@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Wurdle - A daily word game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
+</head>
+<body>
+<div>
+<h1><img d="logo" src="{{ url_for('static', filename='image/wurdle.png') }}"></h1>
+<label class="messages" id="messages">Welcome to Wurdle, type or click your first guess then select enter</label>
+<br/><br/>
+<table id="guessTable" class="center">
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+<!--<div>
+<textarea id="write" rows="1" cols="5" style="display: none"></textarea>
+<img width="35" src="{{ url_for('static', filename='image/favicon256.ico') }}"
+<button id="btnRefresh" class="vertical-center" style="display: none" onClick="window.location.reload();">Press here to Restart Wordle</button>
+</div>-->
+<br/>
+<div id="container">
+	<ul id="keyboard">
+		<li class="letter" id="q">Q</li>
+		<li class="letter" id="w">W</li>
+		<li class="letter" id="e">E</li>
+		<li class="letter" id="r">R</li>
+		<li class="letter" id="t">T</li>
+		<li class="letter" id="y">Y</li>
+		<li class="letter" id="u">U</li>
+		<li class="letter" id="i">I</li>
+		<li class="letter" id="o">O</li>
+		<li class="letter lastitem" id="p">P</li>
+		<li class="letter" id="a">A</li>
+		<li class="letter" id="s">S</li>
+		<li class="letter" id="d">D</li>
+		<li class="letter" id="f">F</li>
+		<li class="letter" id="g">G</li>
+		<li class="letter" id="h">H</li>
+		<li class="letter" id="j">J</li>
+		<li class="letter" id="k">K</li>
+		<li class="letter lastitem" id="l">L</li>
+		<li class="letter" id="z">Z</li>
+		<li class="letter" id="x">X</li>
+		<li class="letter" id="c">C</li>
+		<li class="letter" id="v">V</li>
+		<li class="letter" id="b">B</li>
+		<li class="letter" id="n">N</li>
+		<li class="letter" id="m">M</li>
+		<li class="delete" id="delete">delete</li>
+		<li class="return lastitem" id="enter">enter</li>
+	</ul>
+</div>
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script>
+
+//style="display: none"
+	letterFocus=1;
+	currentWord="";
+	//Capture keyboard entries
+	document.addEventListener('keydown', function (event) {
+
+		if (event.keyCode == 46 || event.keyCode == 8) {
+			updateGuess('delete');
+			event.preventDefault();
+		}
+		if (event.keyCode == 13) {
+			updateGuess('enter');
+			event.preventDefault();
+		}
+		if (event.keyCode >= 65 && event.keyCode <= 90) {
+			updateGuess(event.key.toUpperCase());
+			event.preventDefault();
+		}
+	});
+	
+	function setGuessTable(response){
+		//Gete data from API response
+		positioned = JSON.parse(ret).Positioned;
+		guessCnt = JSON.parse(ret).AttemptCount;
+		message = JSON.parse(ret).Message;
+		guesses = JSON.parse(ret).Guesses;
+		guessHist = JSON.parse(ret).GuessHistory;
+		usedLetters = JSON.parse(ret).UsedLetters;
+		usedLetters = usedLetters.toLowerCase();
+		foundLetters = JSON.parse(ret).FoundLetters;
+		foundLetters = foundLetters.toLowerCase();
+		found = JSON.parse(ret).found;
+		word = JSON.parse(ret).Word;
+
+		//alert(response);
+		//Display the message from the response
+		document.getElementById('messages').innerHTML = message
+
+		//Colour the used letter keys
+		for (var i = 0; i < usedLetters.length; i++) {
+			document.getElementById(usedLetters.charAt(i)).style.backgroundColor = "rgb(58, 58, 60)"; 
+		}
+
+		//Colour the found letter keys
+		for (var i = 0; i < foundLetters.length; i++) {
+			document.getElementById(foundLetters.charAt(i)).style.backgroundColor = "red";
+		}
+
+		//Colur the found letter keys
+		for (var i = 0; i < positioned.length; i++) {
+			if(positioned[i] != '?' && positioned[i] == positioned[i].toLowerCase()){
+				document.getElementById(positioned.charAt(i).toLowerCase()).style.backgroundColor = "rgb(181, 159, 59)"; //orange
+			}
+		}
+
+		for (var i = 0; i < positioned.length; i++) {
+			if(positioned[i] != '?' && positioned[i] == positioned[i].toUpperCase()){
+				document.getElementById(positioned.charAt(i).toLowerCase()).style.backgroundColor = "rgb(83, 141, 78)"; //green
+			}
+		}
+
+		//Get table reference and update table
+		var myTable = document.getElementById('guessTable');
+
+		for (let a = 0; a < guessCnt; a++) {
+			for (let l = 0; l < 5; l++) {
+  				myTable.rows[a].cells[l].innerHTML = guesses[a][l];
+				chrVal = guessHist[a][l];
+				if(chrVal == chrVal.toLowerCase() && chrVal != '?'){
+					myTable.rows[a].cells[l].style.backgroundColor = "rgb(181, 159, 59)"; //orange 
+				}
+				else if(chrVal == chrVal.toUpperCase() && chrVal != '?'){
+					myTable.rows[a].cells[l].style.backgroundColor = "rgb(83, 141, 78)"; //green
+				}
+				else{
+					myTable.rows[a].cells[l].style.backgroundColor = "rgb(58, 58, 60)"; //dark
+				}
+			}
+		}
+
+		//Exit if found or too many guesses
+		if(found == true)
+		{
+			setRowColour(letterFocus-1,"blue");
+			document.getElementById('messages').innerHTML = message + ". Refresh page to play again";
+			return;
+		}
+		//Exit if found or too many guesses
+		if(guessCnt == 6 )
+		{
+			setRowColour(letterFocus-1,"red");
+			document.getElementById('messages').innerHTML = message + ". Refresh page to play again";
+			return;
+		}
+	}
+
+	//Sync data fetcher
+	function fetchData(url) {
+		strReturn = "";
+		jQuery.ajax({
+			url: url,
+			crossDomain: true,
+			success: function (data) {
+				strReturn = data;
+			},
+			error: function (err) {
+			},
+			async: false,
+		});
+		return strReturn;
+    }
+
+	function setRowColour(n,c)
+	{
+		n = Math.trunc((n-1)/5);
+		var myTable = document.getElementById('guessTable');
+		for (let a = 0; a < 5; a++) {
+			myTable.rows[n].cells[a].style.backgroundColor = c; //green
+		}
+	}
+
+	function getTableCellRef(n,c)
+	{
+		var myTable = document.getElementById('guessTable');
+		//document.getElementById('messages').innerHTML  = n;
+		a = Math.trunc((n-1)/5);
+		b = n%5;
+		if(b==0)b=5;
+		//document.getElementById('messages').innerHTML = n + ' ' + a + ' ' + b;
+		myTable.rows[a].cells[b-1].innerHTML = c;
+	}
+
+	validGuess=false;
+
+	//process key updates
+	function updateGuess(character)
+	{
+		//var write = $('#write').val();
+		document.getElementById('enter').style.backgroundColor = "grey";
+		if(character == "enter"){
+			//alert(window.innerWidth + ' ' + window.innerHeight);
+			if(currentWord.length == 5){
+				url = guessURL.replace("xxxxx", currentWord);
+				ret = fetchData(url);
+				setGuessTable(ret);
+				document.getElementById('enter').style.backgroundColor = "grey";
+				//$('#write').val('');
+				currentWord = "";
+				//document.getElementById('write').style.backgroundColor = "white";
+				
+			}
+			return;
+		}
+
+		if(character == "delete"){
+			if(letterFocus > 1 && currentWord.length > 0)
+			{
+				letterFocus -= 1;
+				getTableCellRef(letterFocus,'')
+				setRowColour(letterFocus,"black");
+				currentWord = currentWord.substring(0,currentWord.length-1)
+			}
+			if(currentWord.length < 5){
+				document.getElementById('delete').style.backgroundColor = "grey";
+			}
+			return;
+		}
+
+		if (currentWord.length < 5)
+		{
+			getTableCellRef(letterFocus,character);
+			letterFocus += 1;
+			currentWord = currentWord + character;
+		}
+
+		if(currentWord.length == 5){
+			url = server + 'wurdle/check?word=' + currentWord;
+			ret = fetchData(url);
+			if (ret.includes("true")) {
+				validGuess=true;
+				setRowColour(letterFocus-1,"green")
+				document.getElementById('enter').style.backgroundColor = "green";
+				document.getElementById('delete').style.backgroundColor = "grey";
+			}
+			else {
+				validGuess=false;
+				setRowColour(letterFocus-1,"red")
+				document.getElementById('enter').style.backgroundColor = "grey";
+				document.getElementById('delete').style.backgroundColor = "green";
+			}
+		}
+	}
+
+	//Get HTML table key presses
+	$('#keyboard li').click(function(){
+		var $this = $(this),
+		character = $this.html();
+		updateGuess(character);
+	});
+
+	function setCookie(cname, cvalue, exdays) {
+    document.cookie = cname + " + =; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    let expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+	
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for(let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+
+    server = 'https://wordle.sebright.synology.me/'
+	//server = window.location.href;
+	//Call api and get encrypted word
+	ret = fetchData(server + 'wurdle');
+	guessURL = JSON.parse(ret).URL;
+	encWord = JSON.parse(ret).enc;
+	ret = fetchData('https://wordle.sebright.synology.me/wurdle/word?enc=' + encWord)
+	console.log(ret);
+	// guessURL = server + 'wordle?hide=True&guess=xxxxx&session=' + encWord;
+	// console.log(fetchData(server + 'wordle/word?enc=' + encWord));
+
+</script>
+</body>
+</html>

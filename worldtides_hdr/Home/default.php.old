@@ -1,0 +1,6 @@
+<?php
+
+     // SOMETHING DONE
+
+     header('Location: /worldtides/')
+?>

@@ -1,0 +1,123 @@
+* {
+    margin: auto;
+    /*padding: 10;*/
+    }
+
+    h1 {
+      color: rgb(215, 212, 195);
+    }
+
+    #logo {
+      height: min(15vw,60px);
+    }
+
+    table {
+      /*border-collapse: collapse;
+      margin: 100px;
+      padding: 100px;*/
+    }
+
+    td, tr{
+      border: 1px solid rgb(58, 58, 60);
+      height: min(10vw,45px);
+      width: min(10vw,45px);
+      color: rgb(215, 212, 195);
+      text-align: center;
+      font-size: min(5vw,30px);;
+      font-weight: bold;
+      transition: transform 2s;
+    }
+
+    table.center {
+      margin-left:auto; 
+      margin-right:auto;
+    }
+  
+    #messages{
+      color:aqua;
+      font-size: min(4vw, 20px);
+    }
+
+    body {
+      font: 71%/1.5 arial;
+      background: black;
+      text-align:center;
+    }
+
+    #container {
+      margin: 10px auto;
+      max-width: 700px;
+    }
+
+    .vertical-center {
+      margin: 50;
+      position: absolute;
+      top: 50%;
+      left: 25%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    #keyboard {
+      font-size: 22px;
+      list-style: none;
+    }
+        #keyboard li {
+          float: left;
+          margin: 3px 3px 3px 3px;
+          width: min(12vw,60px);
+          height: min(10vw,55px);
+          color: rgb(215, 212, 195);
+          line-height: 40px;
+          text-align: center;
+          line-height: min(10vw,55px);
+          background: rgb(129, 131, 132);
+          font-family: arial;
+          font-weight: bold;
+          -moz-border-radius: 5px;
+          -webkit-border-radius: 5px;
+          box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23), 0 0 5px #aaa inset;
+          border-radius: 10px;
+        }
+            .capslock, .tab, .left-shift {
+            clear: left;
+            }
+                #keyboard .tab, #keyboard .delete {
+                  width: 95px;
+                }
+                #keyboard .capslock {
+                  width: 50px;
+                }
+                #keyboard .return {
+                  width: 95px;
+                }
+                #keyboard .left-shift {
+                  width: 50px;
+                }
+                #keyboard .right-shift {
+                  width: 50px;
+                }
+            .lastitem {
+              margin-right: 0;
+            }
+            .uppercase {
+              text-transform: uppercase;
+            }
+            #keyboard .space {
+              clear: left;
+              width: 681px;
+            }
+            .on {
+              display: none;
+            }
+            #keyboard li:hover{
+              position: relative;
+              top: 1px;
+              left: 1px;
+              border-color: red;
+              cursor: pointer;
+              background: rgb(50,50,150);
+              box-shadow: 0 30px 60px rgba(0,0,0,0.16), 0 30px 60px rgba(0,0,0,0.23), 0 0 15px #aaa inset;
+              /*transition: transform 0.25s;
+              transform: rotateY(360deg);*/
+            }

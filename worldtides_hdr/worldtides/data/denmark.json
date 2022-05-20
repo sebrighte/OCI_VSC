@@ -1,0 +1,325 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    5.923333,
+                    56.727222
+                ]
+            },
+            "properties": {
+                "Id": "T142E",
+                "Name": "56 44 N 5 55 E",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    11.916666,
+                    54.583333
+                ]
+            },
+            "properties": {
+                "Id": "1390",
+                "Name": "Gedser",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    10.816666,
+                    55.283333
+                ]
+            },
+            "properties": {
+                "Id": "1392",
+                "Name": "Slipshavn",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    11.133333,
+                    55.333333
+                ]
+            },
+            "properties": {
+                "Id": "1387",
+                "Name": "Korsor",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    12.566666,
+                    55.666666
+                ]
+            },
+            "properties": {
+                "Id": "1386",
+                "Name": "Kobenhavn",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    9.733333,
+                    55.55
+                ]
+            },
+            "properties": {
+                "Id": "1395",
+                "Name": "Fredericia",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    10.233333,
+                    56.15
+                ]
+            },
+            "properties": {
+                "Id": "1399",
+                "Name": "Arhus",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    10.6,
+                    57.716666
+                ]
+            },
+            "properties": {
+                "Id": "1411",
+                "Name": "Skagen",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    12.466666,
+                    56.1
+                ]
+            },
+            "properties": {
+                "Id": "1386A",
+                "Name": "Hornbaek",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    9.966666,
+                    57.6
+                ]
+            },
+            "properties": {
+                "Id": "1412",
+                "Name": "Hirtshals",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.6,
+                    57.116666
+                ]
+            },
+            "properties": {
+                "Id": "1412A",
+                "Name": "Hanstholm",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    10.55,
+                    57.433333
+                ]
+            },
+            "properties": {
+                "Id": "1409",
+                "Name": "Frederikshavn",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.216666,
+                    56.7
+                ]
+            },
+            "properties": {
+                "Id": "1413",
+                "Name": "Thyboron",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.116666,
+                    56.366666
+                ]
+            },
+            "properties": {
+                "Id": "1414",
+                "Name": "Thorsminde",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.133333,
+                    56.0
+                ]
+            },
+            "properties": {
+                "Id": "1415",
+                "Name": "Hvide Sande",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.25,
+                    55.433333
+                ]
+            },
+            "properties": {
+                "Id": "1418",
+                "Name": "Gradyb Bar",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.45,
+                    55.466666
+                ]
+            },
+            "properties": {
+                "Id": "1417",
+                "Name": "ESBJERG",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.566666,
+                    55.083333
+                ]
+            },
+            "properties": {
+                "Id": "1419",
+                "Name": "Havneby",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.083333,
+                    55.55
+                ]
+            },
+            "properties": {
+                "Id": "1416",
+                "Name": "Blavands Huk",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.666666,
+                    54.966666
+                ]
+            },
+            "properties": {
+                "Id": "1420",
+                "Name": "Hojer",
+                "Country": "Denmark",
+                "ContinuousHeightsAvailable": false
+            }
+        }
+    ]
+}

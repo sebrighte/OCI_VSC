@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADMIRALTY WorldTides Print</title>
+    <meta name="description"
+        content="Free UK tidal prediction service, providing tidal data and tide times for the current day and 6 days into the future.">
+
+
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css" />
+        <meta name="x-stylesheet-fallback-test" content="" class="sr-only" /><script>!function(a,b,c,d){var e,f=document,g=f.getElementsByTagName("SCRIPT"),h=g[g.length-1].previousElementSibling,i=f.defaultView&&f.defaultView.getComputedStyle?f.defaultView.getComputedStyle(h):h.currentStyle;if(i&&i[a]!==b)for(e=0;e<c.length;e++)f.write('<link href="'+c[e]+'" '+d+"/>")}("position","absolute",["/lib/bootstrap/dist/css/bootstrap.min.css"], "rel=\u0022stylesheet\u0022 ");</script>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/%40ukho/styles@1.3.21/dist/ukho.min.css" />
+        <link rel="stylesheet" href="../lib/openlayer/v6.5.0-dist/ol.css">
+        <link rel="stylesheet" href="../css/easytide.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js"></script>
+
+</head>
+
+<body id="easytide-body">
+    <div class="app-container">
+        <header class="site-header">
+            <div class="container-fluid">
+                <nav id="new-menu">
+                    <div class="logo">
+                        <a href="https://www.admiralty.co.uk/" tabindex="0" id="admiralitylogo"><img
+                                src="../images/Admiralty-stacked-logo.svg" alt="Admiralty Logo"></a>
+                        <h1><a href="/worltides/" id="easytidehead">WorldTides Print</a></h1>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <div class="body-content">
+
+
+            <div class="row" role="main">
+                <input type=hidden id="numberOfPredicationDays" value=7 />
+                <div id="printcontainer" class="container-fluid body-content">
+                    <div class="row print-padding-elements">
+                        <div class="col-sm-12">
+                            <p id="locationNameprint"></p>
+                            <p id="daterange"></p>
+                        </div>
+                    </div>
+
+                    <div class="row print-padding-elements">
+                        <div class="col-sm-12 tidal-times">
+                            <div class="title">Tide times</div>
+                            <div>
+                                <span id="_printbsttitle" style="font-size: 12px; color: #000">Tides times in UTC</span>
+                                <div class="table-wrapper">
+                                    <table id="tidal-table-print">
+                                        <thead>
+                                            <tr></tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
+                                <p id="spnPredictionMessage" class="hide">Predictions should be read in conjunction with
+                                    the graph</p>
+                                <div>
+                                    <div id="lunar-phase-print">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row print-padding-elements">
+                        <div class="col-sm-12 tidal-curve">
+                            <div class="title">Tidal curve</div>
+                            <div class="content">
+                                <div id="tidalcurvegraph">
+                                    <span class="tidal-curve-title">Predicted heights are in metres above Chart
+                                        Datum</span>
+                                    <div id="chartAreaWrapper" class="chartAreaWrapper">
+                                        <div id="canvas-wrapper-print">
+                                            <canvas id="chart-print"></canvas>
+                                            <span id="spnGraphCopyrightMessage">Copyright © 2014-2021 Chart.js
+                                                contributors</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="alertSection" class="hide">
+                                    <div id="alertInfo">
+                                        <div id="alert" class="alert alert-info" role="alert">
+                                            <h4 class="alert-heading"> <i class="fa fa-info-circle"
+                                                    aria-hidden="true"></i>Important information</h4>
+                                            <p>Insufficient source data inhibits computation of full predictions
+                                                (including a tidal graph) for this tidal station and so a tidal curve
+                                                will not be displayed </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="footerNote" class="note-message">
+                                    <p id="spnFooterNoteMessage"></p>
+                                </div>
+                                <div id="navigationMessage" class="note-message">
+                                    <p><b>Please note:</b> <i>The data provided has not been designed to meet the
+                                            specific requirements of any particular type of user. It is therefore the
+                                            user's responsibility to ensure that the data is suitable for their intended
+                                            purpose. EasyTide must not be used by vessels for navigation.</i></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <footer class="site-footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-lg-auto mr-auto">
+                        <div class="footer-img">
+                            <img src="../images/UKHO-stacked-logo.svg" alt="UKHO" class="img-fluid">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-auto">
+                        <div class="footer-links">
+                            <a href=/FAQs target="_blank" tabindex="0" id="faqlink">FAQs</a>
+                            <a href="https://www.admiralty.co.uk/cookie-policy?selectTab=Terms%20and%20Conditions"
+                                target="_blank" tabindex="0" id="termsofuselink">Terms of use</a>
+                            <a href="https://www.admiralty.co.uk/cookie-policy" target="_blank" tabindex="0"
+                                id="privacypolicylink">Privacy policy</a>
+                            <a href=/Accessibility target="_blank" tabindex="0" id="accessibilitylink">Accessibility</a>
+                            <p class="footer-text">&copy; Crown copyright 2021 UK Hydrographic Office</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <script src="../js/olmap.js"></script>
+    <script src="../js/tidalTable.js"></script>
+    <script src="../js/moreOptions.js"></script>
+    <script src="../js/site.js"></script>
+    <script src="../js/tidalCurve.js"></script>
+    <script src="../lib/openlayer/v6.5.0-dist/ol.js"></script>
+
+    <script type="text/javascript">
+        var superscript = "";
+        window.onload = function () {
+            $("#termsofuselink").css('display', 'none')
+            $("#privacypolicylink").css('display', 'none')
+            $("#accessibilitylink").css('display', 'none')
+            $("#faqlink").css('display', 'none')
+            var val = localStorage.getItem("stationid")
+            offset = localStorage.getItem("offset")
+            $("#locationNameprint").text(localStorage.getItem("locationName"));
+            GetPredictionData(val);
+            if (localStorage.getItem("exportoption") == "onedayoption") {
+                SetOneDayViewDates()
+                var date = new Date(Date.parse(startDate));
+                funDaySuperscript(date);
+                var sdate = weekdays(date.toLocaleDateString('en-GB', { weekday: "short" })) + " " + date.toLocaleDateString('en-GB', { day: "numeric" }) + superscript + " " + date.toLocaleDateString('en-GB', { month: "long" }) + " " + date.toLocaleDateString('en-GB', { year: 'numeric' })
+                $("#daterange").text(sdate)
+                $("#canvas-wrapper-print").css({ "width": "100%", "max-width": "100%" });
+                $(".chartAreaWrapper").css("overflow-x", "hidden");
+
+            }
+            if (localStorage.getItem("exportoption") == "sevendayoption") {
+                SetSevenDayViewDates()
+                var fromdate = new Date(Date.parse(startDate));
+                funDaySuperscript(fromdate);
+                var sdate = weekdays(fromdate.toLocaleDateString('en-GB', { weekday: 'short' })) + " " + fromdate.toLocaleDateString('en-GB', { day: "numeric" }) + superscript + " " + fromdate.toLocaleDateString('en-GB', { month: "long" })
+                var todate = new Date(Date.parse(startDate));
+                todate.setDate(todate.getDate() + 7 - 1);
+                funDaySuperscript(todate);
+                var edate = weekdays(todate.toLocaleDateString('en-GB', { weekday: 'short' })) + " " + todate.toLocaleDateString('en-GB', { day: "numeric" }) + superscript + " " + todate.toLocaleDateString('en-GB', { month: "long" }) + " " + todate.toLocaleDateString('en-GB', { year: 'numeric' });
+                $("#daterange").text(sdate + " - " + edate)
+            }
+            generateTidalTableforPrint();
+            TidalCurveXAxislabelsForSevenDayView(true);
+            generateTidalCurve('chart-print');
+            $("#admiralitylogo").addClass("disabled-link");
+            $("#easytidehead").addClass("disabled-link");
+            $(".skip-main").remove();
+            var lunarAlt = $(".lunar").attr("alt");
+            if (lunarAlt != undefined) {
+                $('#lunar-phase-print').html('<img height=13px width=13px alt="lunar phase" src="' + localStorage.getItem("lunarphasesrc") + '" /> <span style="font-size:12px">' + lunarAlt + '</span>');
+            }
+            $("#printbsttitle").text(localStorage.getItem("bstitleprint"));
+            setTimeout(function () { window.print() }, 1000);
+        }
+        function funDaySuperscript(date) {
+            var curr_date = date.getDate();
+            if (curr_date == 1 || curr_date == 21 || curr_date == 31) {
+                superscript = "st";
+            }
+            else if (curr_date == 2 || curr_date == 22) {
+                superscript = "nd";
+            }
+            else if (curr_date == 3 || curr_date == 23) {
+                superscript = "rd";
+            }
+            else {
+                superscript = "th";
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>

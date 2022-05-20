@@ -19,22 +19,23 @@ def GetCellKeyfromCellPermit(HW_ID,PermitLine,ECK1 = True):
 
 def decryptENC(enc_path, cypher, dest_path, delAllFiles = False):
     "Returns True if decrypted file is successfully created"
-    try:
-        file = open(enc_path, "rb")
-        bytesRead = file.read()
-        cipher = blowfish.Cipher(bytes.fromhex(cypher))
-        dbr = b"".join(cipher.decrypt_ecb(bytesRead))
-        if delAllFiles: clearDir(dest_path + '*')
-        WriteBinary(dest_path + "tmp.zip", dbr)
+    #try:
+    file = open(enc_path, "rb")
+    bytesRead = file.read()
+    cipher = blowfish.Cipher(bytes.fromhex(cypher))
+    dbr = b"".join(cipher.decrypt_ecb(bytesRead))
+    if delAllFiles: clearDir(dest_path + '*')
+    WriteBinary(dest_path + "tmp.zip", dbr)
 
-        from zipfile import ZipFile
-        with ZipFile(dest_path + "tmp.zip", 'r') as zip:
-            #zip.printdir()
-            zip.extractall(dest_path)
+    from zipfile import ZipFile
+    with ZipFile(dest_path + "tmp.zip", 'r') as zip:
+        #zip.printdir()
+        zip.extractall(dest_path)
 
-        os.remove(dest_path + "tmp.zip")
-        return os.path.exists(dest_path + os.path.basename(enc_path))
-    except: return False
+    os.remove(dest_path + "tmp.zip")
+    #return os.path.exists(dest_path + os.path.basename(enc_path))
+    return (os.path.exists(dest_path + os.path.basename(enc_path)), dest_path + os.path.basename(enc_path))
+    #except: return False
 
 def Write(filename,strVal,cls=False):
     if os.path.exists(filename) and cls==True:

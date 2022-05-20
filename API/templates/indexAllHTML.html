@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Wurdle - A fun word game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
+</head>
+<body>
+<div><br/>
+<h1><img id="logo" src="{{ url_for('static', filename='image/wurdle.png') }}"></h1>
+<label class="messages" id="messages">V1. Welcome to Wurdle, type or click your first guess.</label>
+<br/><br/>
+<table id="guessTable" class="center">
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+<br/>
+
+<div id="container">
+	<ul id="keyboard">
+		<li class="letter" id="q">Q</li>
+		<li class="letter" id="w">W</li>
+		<li class="letter" id="e">E</li>
+		<li class="letter" id="r">R</li>
+		<li class="letter" id="t">T</li>
+		<li class="letter" id="y">Y</li>
+		<li class="letter" id="u">U</li>
+		<li class="letter" id="i">I</li>
+		<li class="letter" id="o">O</li>
+		<li class="letter lastitem" id="p">P</li>
+		<li class="letter" id="a">A</li>
+		<li class="letter" id="s">S</li>
+		<li class="letter" id="d">D</li>
+		<li class="letter" id="f">F</li>
+		<li class="letter" id="g">G</li>
+		<li class="letter" id="h">H</li>
+		<li class="letter" id="j">J</li>
+		<li class="letter" id="k">K</li>
+		<li class="letter lastitem" id="l">L</li>
+		<li class="letter" id="z">Z</li>
+		<li class="letter" id="x">X</li>
+		<li class="letter" id="c">C</li>
+		<li class="letter" id="v">V</li>
+		<li class="letter" id="b">B</li>
+		<li class="letter" id="n">N</li>
+		<li class="letter" id="m">M</li>
+		<li class="delete" id="delete">delete</li>
+		<li class="return lastitem" id="enter">enter</li>
+	</ul>
+</div>
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+<script src="/API/words.py"></script>
+<script src="/API/gusses.py"></script>
+
+<script>
+
+	currentWord="";
+	isEnd = false;
+
+    //alert(WORD_LIST.length);
+    //alert(GUESS_LIST.length);
+
+	//Capture keyboard entries
+	document.addEventListener('keydown', function (event) {
+
+		if (event.keyCode == 46 || event.keyCode == 8) {
+			updateGuess('delete');
+			event.preventDefault();
+		}
+		if (event.keyCode == 13) {
+			updateGuess('enter');
+			event.preventDefault();
+		}
+		if (event.keyCode >= 65 && event.keyCode <= 90) {
+			updateGuess(event.key.toUpperCase());
+			event.preventDefault();
+		}
+	});
+	
+	//Sync data fetcher
+	function fetchData(url) {
+		strReturn = "";
+		jQuery.ajax({
+			url: url,
+			crossDomain: true,
+			success: function (data) {
+				strReturn = data;
+			},
+			error: function (err) {
+			},
+			async: false,
+		});
+		return strReturn;
+    }
+
+	function setGuessTable(){
+
+		//Exit if found 
+		if(currentWord == wurdle.word)
+		{
+			setRowColour(wurdle.letterFocus-1,"blue");
+			document.getElementById('messages').innerHTML = "You found the word " + wurdle.word + ". Refresh page to play again";
+			isEnd = true;
+			wurdle.complete = true;
+			return;
+		}
+
+		//Exit if too many guesses
+		if(wurdle.attempts == 6 )
+		{
+			setRowColour(wurdle.letterFocus-1,"red");
+			document.getElementById('messages').innerHTML = "You failed to find the word " + wurdle.word + ". Refresh page to play again";
+			wurdle.complete = true;
+			return;
+		}
+
+		if(wurdle.foundLetters.length > 1){
+			document.getElementById('messages').innerHTML = "Well done you have found " + wurdle.foundLetters.length + " letters so far...";
+		} else if (wurdle.foundLetters.length ==0){
+			document.getElementById("messages").innerHTML = "Sorry no letters found, Keep trying";
+		} else {
+			document.getElementById('messages').innerHTML = "Well done you have found " + wurdle.foundLetters.length + " letter so far...";
+		}
+
+		//Colour the used letter keys
+		for (var i = 0; i < wurdle.usedLetters.length; i++) {
+			document.getElementById(wurdle.usedLetters.charAt(i)).style.backgroundColor = "rgb(58, 58, 60)"; 
+		}
+
+		//Colour the found letter keys
+		for (var i = 0; i < wurdle.foundLetters.length; i++) {
+			if(wurdle.foundLetters[i] != '?' && wurdle.foundLetters[i] == wurdle.foundLetters[i].toLowerCase()){
+				document.getElementById(wurdle.foundLetters.charAt(i).toLowerCase()).style.backgroundColor = "rgb(181, 159, 59)"; //orange
+			}
+		}
+
+		//Colour the positioned letter keys
+		for (var i = 0; i < wurdle.foundLetters.length; i++) {
+			if(wurdle.foundLetters[i] != '?' && wurdle.foundLetters[i] == wurdle.foundLetters[i].toUpperCase()){
+				document.getElementById(wurdle.foundLetters.charAt(i).toLowerCase()).style.backgroundColor = "rgb(83, 141, 78)"; //green
+			}
+		}
+
+		//Get table reference and update table
+		var myTable = document.getElementById('guessTable');
+		for (let a = 0; a < wurdle.attempts; a++) {
+			for (let l = 0; l < 5; l++) {
+  				myTable.rows[a].cells[l].innerHTML = wurdle.guessWords[a][l];
+				chrVal = wurdle.responseHistory[a][l];
+				if(chrVal == chrVal.toLowerCase() && chrVal != '?'){
+					myTable.rows[a].cells[l].style.backgroundColor = "rgb(181, 159, 59)"; //orange 
+				}
+				else if(chrVal == chrVal.toUpperCase() && chrVal != '?'){
+					myTable.rows[a].cells[l].style.backgroundColor = "rgb(83, 141, 78)"; //green
+				}
+				else{
+					myTable.rows[a].cells[l].style.backgroundColor = "rgb(58, 58, 60)"; //dark
+				}
+			}
+		}
+	}
+
+	function setRowColour(n,c)
+	{
+		n = Math.trunc((n-1)/5);
+		var myTable = document.getElementById('guessTable');
+		for (let a = 0; a < 5; a++) {
+			myTable.rows[n].cells[a].style.backgroundColor = c; //green
+		}
+	}
+
+	function getTableCellRef(n,c)
+	{
+		var myTable = document.getElementById('guessTable');
+		a = Math.trunc((n-1)/5);
+		b = n%5;
+		if(b==0)b=5;
+		myTable.rows[a].cells[b-1].innerHTML = c;
+	}
+
+	//process key updates
+	function updateGuess(character)
+	{
+		if(isEnd == true) return;
+
+		document.getElementById('enter').style.backgroundColor = "grey";
+		if(character == "enter"){
+
+			if(wurdle.guessWords.includes(currentWord)){
+				document.getElementById('messages').innerHTML = "You have used that word, try another";
+				setRowColour(wurdle.letterFocus-1,"Red")
+				return;
+			}
+			if(currentWord.length == 5){
+				if(validGuess){
+					wurdle.guessWord(currentWord);
+					setGuessTable();
+					document.getElementById('enter').style.backgroundColor = "grey";
+					document.getElementById('delete').style.backgroundColor = "grey";
+					currentWord = "";
+				}
+			}
+			return;
+		}
+
+		if(character == "delete"){
+			if(wurdle.letterFocus > 1 && currentWord.length > 0)
+			{
+				wurdle.letterFocus -= 1;
+				getTableCellRef(wurdle.letterFocus,'')
+				setRowColour(wurdle.letterFocus,"black");
+				currentWord = currentWord.substring(0,currentWord.length-1)
+			}
+			if (currentWord.length > 0){
+				document.getElementById('delete').style.backgroundColor = "green";
+			} else {
+				document.getElementById('delete').style.backgroundColor = "grey";
+			}
+			return;
+		}
+
+		if (currentWord.length < 5){
+			getTableCellRef(wurdle.letterFocus,character);
+			wurdle.letterFocus += 1;
+			currentWord = currentWord + character;
+		}
+
+		if (currentWord.length > 0){
+			document.getElementById('delete').style.backgroundColor = "green";
+		}  else {
+				document.getElementById('delete').style.backgroundColor = "grey";
+			}
+
+		if(currentWord.length == 5){
+			ret = wurdle.checkWord(currentWord);
+			if (ret == true) {
+				validGuess=true;
+				setRowColour(wurdle.letterFocus-1,"green")
+				document.getElementById('enter').style.backgroundColor = "green";
+				document.getElementById('delete').style.backgroundColor = "green";
+			}
+			else {
+				validGuess=false;
+				setRowColour(wurdle.letterFocus-1,"red")
+				document.getElementById('enter').style.backgroundColor = "grey";
+				document.getElementById('delete').style.backgroundColor = "green";
+			}
+		}
+	}
+
+	//Get HTML table key presses
+	$('#keyboard li').click(function(){
+		var $this = $(this),
+		character = $this.html();
+		updateGuess(character);
+	});
+
+	// function setCookie(cvalue) {
+	// 	document.cookie = "wordle=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+	// 	const d = new Date();
+	// 	d.setTime(d.getTime() + (99 * 24 * 60 * 60 * 1000));
+	// 	let expires = "expires="+d.toUTCString();
+	// 	document.cookie = "wordle=" + cvalue + ";" + expires + ";path=/";
+	// }
+	
+	// function getCookie() {
+	// 	let name = "wordle=";
+	// 	let ca = document.cookie.split(';');
+	// 	for(let i = 0; i < ca.length; i++) {
+	// 	let c = ca[i];
+	// 	while (c.charAt(0) == ' ') {
+	// 		c = c.substring(1);
+	// 		}
+	// 		if (c.indexOf(name) == 0) {
+	// 			return c.substring(name.length, c.length);
+	// 		}
+	// 	}
+	// 	return "";
+	// }
+
+	// function enccodeCookie(){
+	// 	setCookie(wurdle.serialize());
+	// 	console.log(getCookie());
+	// }
+
+	// function decodeCookie(){
+	// 	console.log(getCookie());
+	// 	wurdle.unserialize(getCookie());
+	// 	if(wurdle.complete==false){
+	// 		setGuessTable();	
+	// 	}
+	// 	else {
+	// 		wurdle = new ClsWurdle();
+	// 	}
+	// }
+
+	function clean(item){
+		retval = '';
+		item.forEach(element => {
+			var e = String(element);
+			e.split('').map(letter => {
+					if(letter != '?')retval += letter
+				});
+			});
+		return unrepeated(retval).toLowerCase();;
+	}
+
+	const unrepeated = (str) => [...new Set(str)].join('');
+
+    class ClsWurdle {
+      	constructor() {
+			//this.server = window.location.href;
+			//this.server = 'https://wordle.sebright.synology.me/';
+			//this.server = 'http://129.151.93.225:8080/wurdle';
+			//this.server = 'https://oci.sebright.synology.me/wurdle/';
+			this.enc = "";
+			this.word = "";
+			this.attempts = 0;
+			this.guessWords = [];
+			this.responseHistory = [];
+			this.usedLetters = "";
+			this.foundLetters = "";
+			this.guessUrl = "";
+			this.letterFocus = 1;
+			this.complete = false;
+			//this.getWord();
+            this.word = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)].toUpperCase();
+            alert(this.word.toUpperCase());
+        }
+
+		// getWord(){
+		// 	var ret = fetchData(this.server + 'wurdle');
+		// 	this.enc = JSON.parse(ret).enc;
+		// 	//this.guessUrl = JSON.parse(ret).URL;
+		// 	this.guessUrl = this.server + 'wurdleSl?hide=True&guess=xxxxx&session=' + this.enc;
+		// 	ret = fetchData(this.server + '/wurdle/word?enc=' + this.enc);
+		// 	this.word = JSON.parse(ret).word;
+		// 	//this.word = this.word.replace(/['"]+/g, '');
+		// 	//this.word = this.word.replace(/(\r\n|\n|\r)/gm, "");
+		// 	console.log(this.word);
+		// }
+
+		// serialize(){
+		// 	var str = JSON.stringify(this);
+		// 	return str;
+		// }
+
+		// unserialize(str) {
+		// 	var serializedObject = JSON.parse(str);
+		// 	Object.assign(this, serializedObject);
+		// }
+
+		getWordVal() {
+			var url = this.server + 'wurdle/word?enc=' + this.enc;
+			var ret = fetchData(url);
+			return ret;
+		}
+
+		checkWord(word) {
+			//var url = this.server + 'wurdle/check?word=' + word;
+			//var ret = fetchData(url);
+            //GUESS_LIST.includes(word);
+            word = word.toLowerCase();
+			return (WORD_LIST.includes(word) || GUESS_LIST.includes(word));
+		}
+
+		guessWord(word){
+			var url = this.guessUrl.replace("xxxxx", word);;
+			var ret = fetchData(url);
+			var ret = JSON.parse(ret);
+			var fnd = ret.Found;
+			var msg = ret.Error;
+			this.guessWords = this.guessWords.concat(ret.Guess);
+			this.responseHistory = this.responseHistory.concat(ret.Response);
+			this.usedLetters = clean(this.guessWords);
+			this.foundLetters = clean(this.responseHistory);
+			this.attempts += 1;
+		}
+    }
+	
+	validGuess=false;
+	let wurdle = new ClsWurdle();
+
+</script>
+</body>
+</html>

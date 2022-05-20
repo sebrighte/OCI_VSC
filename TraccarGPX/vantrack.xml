@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="gpx.py -- https://github.com/tkrajina/gpxpy">
+  <trk>
+    <trkseg>
+      <trkpt lat="50.996071666666666" lon="-3.121215">
+        <ele>0.0</ele>
+        <time>2022-03-13T13:28:36Z</time>
+        <name>ID:0</name>
+      </trkpt>
+      <trkpt lat="51.012768333333334" lon="-3.100385">
+        <ele>0.0</ele>
+        <time>2022-03-13T13:33:36Z</time>
+        <name>ID:1</name>
+      </trkpt>
+      <trkpt lat="51.024433333333334" lon="-3.082125">
+        <ele>0.0</ele>
+        <time>2022-03-13T13:38:36Z</time>
+        <name>ID:2</name>
+      </trkpt>
+      <trkpt lat="51.019056666666664" lon="-3.0629799999999996">
+        <ele>0.0</ele>
+        <time>2022-03-13T13:43:36Z</time>
+        <name>ID:3</name>
+      </trkpt>
+      <trkpt lat="51.071191666666664" lon="-3.014326666666667">
+        <ele>0.0</ele>
+        <time>2022-03-13T13:48:36Z</time>
+        <name>ID:4</name>
+      </trkpt>
+      <trkpt lat="51.11030777777778" lon="-2.9944183333333334">
+        <ele>0.0</ele>
+        <time>2022-03-13T13:53:36Z</time>
+        <name>ID:5</name>
+      </trkpt>
+      <trkpt lat="51.122612777777775" lon="-3.021565">
+        <ele>0.0</ele>
+        <time>2022-03-13T13:58:36Z</time>
+        <name>ID:6</name>
+      </trkpt>
+      <trkpt lat="51.119546666666665" lon="-3.0388533333333334">
+        <ele>0.0</ele>
+        <time>2022-03-13T14:03:36Z</time>
+        <name>ID:7</name>
+      </trkpt>
+      <trkpt lat="51.122575" lon="-3.0235966666666663">
+        <ele>0.0</ele>
+        <time>2022-03-13T14:53:36Z</time>
+        <name>ID:8</name>
+      </trkpt>
+      <trkpt lat="51.12401444444445" lon="-3.0151183333333336">
+        <ele>0.0</ele>
+        <time>2022-03-13T14:58:36Z</time>
+        <name>ID:9</name>
+      </trkpt>
+      <trkpt lat="51.125825" lon="-3.002911111111111">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:03:36Z</time>
+        <name>ID:10</name>
+      </trkpt>
+      <trkpt lat="51.10046944444444" lon="-3.0022233333333332">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:08:36Z</time>
+        <name>ID:11</name>
+      </trkpt>
+      <trkpt lat="51.078858333333336" lon="-3.002786111111111">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:13:36Z</time>
+        <name>ID:12</name>
+      </trkpt>
+      <trkpt lat="51.059670000000004" lon="-2.9896966666666667">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:18:36Z</time>
+        <name>ID:13</name>
+      </trkpt>
+      <trkpt lat="51.047606111111115" lon="-3.01404">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:33:36Z</time>
+        <name>ID:14</name>
+      </trkpt>
+      <trkpt lat="51.03525833333333" lon="-3.0677683333333334">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:38:36Z</time>
+        <name>ID:15</name>
+      </trkpt>
+      <trkpt lat="51.01648833333333" lon="-3.0886916666666666">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:43:36Z</time>
+        <name>ID:16</name>
+      </trkpt>
+      <trkpt lat="51.01351333333333" lon="-3.097515">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:48:36Z</time>
+        <name>ID:17</name>
+      </trkpt>
+      <trkpt lat="51.002567777777784" lon="-3.114885">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:53:36Z</time>
+        <name>ID:18</name>
+      </trkpt>
+      <trkpt lat="50.98670666666666" lon="-3.1222533333333335">
+        <ele>0.0</ele>
+        <time>2022-03-13T15:58:36Z</time>
+        <name>ID:19</name>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

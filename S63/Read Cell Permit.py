@@ -56,7 +56,7 @@ def getCellKey(eck, text = 'Nothing...', pmin = 0x10000):
         return 0
     print('')
 
-with open('S63/Data/QNLZ Permit.txt') as f:
+with open('/config/workspace/S63/Data/QNLZ Permit.txt') as f:
     lines = f.readlines()
 
 pos = 0x10000

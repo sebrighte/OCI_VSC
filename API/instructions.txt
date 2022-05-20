@@ -1,0 +1,22 @@
+sudo apt install apache2
+sudo nano /etc/apache2/ports.conf (port 8080)
+
+#WSGI
+sudo apt-get install libapache2-mod-wsgi-py3 python-dev
+
+#Wurdle
+mkdir /var/www/html/API
+sudo cp /config/workspace/API /var/www/html/ -r 
+sudo cp /config/workspace/API/wurdle.conf /etc/apache2/sites-available/
+sudo a2ensite wurdle.conf
+sudo /etc/init.d/apache2 restart
+
+#TraccarAPI
+sudo cp /config/workspace/TraccarGPX/  /var/www/html/ -r
+sudo cp /config/workspace/TraccarGPX/API/traccar.conf  /etc/apache2/sites-available
+sudo a2ensite traccar.conf
+sudo /etc/init.d/apache2 restart
+sudo pip install flask flask-restful flask-cors cryptography
+
+#Index Web Page
+sudo cp /config/workspace/web/oci/index.html /var/www/html/
