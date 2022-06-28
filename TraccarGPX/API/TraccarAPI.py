@@ -72,9 +72,14 @@ class DayGraphAll(Resource):
     def get(self):
         print(".............................Here...................................")
         period = 2
-        today = datetime.datetime.now()
+        # today = datetime.datetime.now()
         dpiVal = int(request.args.get('dpi','1000'))
+        # end = today.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        today = datetime.datetime.now()
         end = today.strftime("%Y-%m-%dT%H:%M:%SZ")
+        start = (today - timedelta(days=period)).strftime("%Y-%m-%dT00:00:00Z")
+
         start = (today - timedelta(days=period)).strftime("%Y-%m-%dT00:00:00Z")
         traccrURL = f"https://traccar.sebright.synology.me/api/reports/route?deviceId=7&from={start}&to={end}"
         print(traccrURL)
@@ -82,11 +87,13 @@ class DayGraphAll(Resource):
         headersList = {'Accept': 'application/json'}
         response = requests.get(traccrURL, auth = HTTPauth, headers = headersList)
         JSON = json.loads(response.content)
+        print(traccrURL)
 
         date = []
         level = []
         lastday = 0
         day = 0
+        pdt = ""
 
         for result in JSON:
             try: 
@@ -109,7 +116,7 @@ class DayGraphAll(Resource):
         fig = plt.figure(figsize=(8,4), dpi=dpiVal, tight_layout=True)
         plt.plot(date, level, linewidth=0.5)
         #plt.plot(date, level, 'o', label='data')
-        plt.title(f"WA10JHO 24h Vehicle Battery Charge State - Current: " + pdt.strftime("%H:%M") + f" ({bl}%)")
+        plt.title(f"WA10JHO 24h Vehicle Battery Charge State - Current: ")# + pdt.strftime("%H:%M") + f" ({bl}%)")
         plt.xlabel("Date [day/time]")
         plt.ylabel("Battery Charge [%]")
         plt.show()

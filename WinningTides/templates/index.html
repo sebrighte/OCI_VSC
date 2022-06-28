@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>Solent Racing Index</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create four equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 33%;
+            padding: 20px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .border {
+            border: 1px;
+
+        }
+
+        .center {
+            display: block;
+            margin: auto;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+
+        /* On screens that are 992px wide or less, go from four columns to two columns */
+        @media screen and (max-width: 992px) {
+            .column {
+                width: 50%;
+            }
+        }
+
+        .image {
+            position: relative;
+            width: 100%;
+            /* for IE 6 */
+        }
+
+        /*h2 { 
+           position: absolute; 
+           top: 200px; 
+           left: 0; 
+           width: 100%; 
+        }*/
+
+        a {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+        }
+
+        .header {
+            font-family: arial;
+            padding: 5px;
+            text-align: center;
+            background: #1abc9c;
+            color: black;
+            font-size: calc(6px + 1.5vw);
+        }
+
+        /* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 600px) {
+            .column {
+                width: 100%;
+            }
+        }
+    </style>
+    <div class='header'>
+        <h1>Solent Racing Index</h1>
+    </div>
+
+<body>
+    <br />
+    <div class="column center border">
+        <a class="links" href="#" onclick="window.location.href='streams'">Solent Streams:<br />
+            <img style="border: 2px solid" width="300" height="150" src="static/winningtides.jpg"></a><br />
+        <!--<a class="links" href="#" onclick="window.location.href='{{baseURL}}' + 'pdf/2022-06-13T10:01:00'">Streams API [e.g. 2022-06-13T10:01:00]</a><br/><br/>-->
+
+    </div>
+    <div class="column center border">
+
+        <a class="links" href="#" onclick="window.location.href='route'">Racing Routes:<br />
+            <img style="border: 2px solid" width="300" height="150" src="static/route.JPG"></a><br />
+        <!--<a class="links" href="#" onclick="window.location.href='{{baseURL}}' + '/route/3Z 3US 4NP 31P 4US 3Z'">Route API [e.g. 3Z 3US 4NP 31P 4US 3Z]</a><br/>-->
+    </div>
+    <div class="column center border">
+        <a class="links" href="#" onclick="window.location.href='tides'">Solent Tides:<br />
+            <img style="border: 2px solid" width="300" height="150"
+                src="https://www.nci.org.uk/files/u2241/southampton_tide_w260h200.jpg"></a><br />
+
+    </div>
+
+    <div class="column center border">
+        <a class="links" href="#" onclick="window.location.href='ecdis'">ENC Charts:<br />
+            <img style="border: 2px solid" width="300" height="150" src="static/ecdis.PNG"></a><br />
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        td {
+            font-family: arial;
+            font-size: calc(10px + 0.6vw);
+            border: 1px solid black;
+            padding: 10px;
+            border-spacing: 0px;
+        }
+
+        th {
+            color: white;
+            background: black;
+            border: 1px solid white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table {
+            font-family: arial;
+            font-size: calc(10px + 0.6vw);
+            border: 1px solid black;
+            padding: 0px;
+            border-spacing: 0px;
+        }
+
+        .header {
+            font-family: arial;
+            padding: 5px;
+            text-align: center;
+            background: #1abc9c;
+            color: black;
+            font-size: calc(6px + 1.5vw);
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #line-chart {
+            border: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='header'>
+        <h1>7 Day Solent Tidal Events</h1>
+        <p>Portsmouth (UTC) <a href="#" onclick="GetUrl()"> Home</a></p>
+    </div>
+    <br />
+    <canvas id="line-chart" height="100"></canvas>
+    <br />
+    {{tdata|safe}}
+</body>
+<script type="text/javascript">
+
+    function GetUrl() { location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1)) }
+
+    var tideData = JSON.parse('{{ data | tojson }}');
+    var tidalHeightHour = [];
+    var tidalHeightHeight = [];
+    var obs = 0;
+    var maxObservations = 100
+
+    jQuery.each(tideData, function () {
+        if (obs < maxObservations) {
+            tidalHeightHeight.push(this.height);
+            tidalHeightHour.push(this.dateTime.replace("T", " ").replace("Z", "").slice(0, -3))
+        }
+        obs = obs + 1;
+    });
+
+    var curveplugins = {
+        legend: {
+            display: false, /*Title of graph*/
+        },
+        tooltip: {
+            callbacks: {
+                title: function () {
+                    return;
+                },
+                label: function (tooltipItem) {
+                    return tooltipItem.label + " " + tooltipItem.raw.toFixed(2) + "m";
+                }
+            }
+        },
+        title: {
+            display: true,
+            text: '48h Tidal Graph for PORTSMOUTH'
+        }
+    }
+
+    new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+            labels: tidalHeightHour,
+            datasets: [{
+                backgroundColor: "rgba(151,187,205,0.5)",
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: 'red',
+                borderColor: 'rgba(135,206,235,1)',
+                data: tidalHeightHeight,
+                fill: {
+                    target: 'origin',
+                    above: 'rgba(173,216,230,.3)'
+                },
+                borderColor: 'rgba(0,0,100,1)'
+            }
+            ]
+        },
+        options: {
+            plugins: curveplugins,
+            elements: { line: { tension: 0.4 }, point: { radius: 3 } }, /*Tension- Shape of line, radius - Size of points plot on graph*/
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date and Time (half hour tidal prediction)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Height in m'
+                    }
+                }
+            }
+        }
+    });
+
+</script>

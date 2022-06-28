@@ -8,14 +8,14 @@ import os
 #easygui.msgbox("This is a message!", title="simple gui")
 
 def dumpInc(msg, pos = 0):
-    if pos == -1: print("...Start")
+    if pos == -1: 
+        os.system('cls' if os.name=='nt' else 'clear')
+        print("...Start")
     if pos == 1 : print("...End")
     if pos == 0 : print(f"{dumpInc.counter}. {msg}")
     dumpInc.counter += 1
 
 dumpInc.counter = 0
-
-os.system('cls' if os.name=='nt' else 'clear')
 
 path = 'Solent Race Marks/'
 fileName = 'iSailor Solent Marks 2022.gpx'
@@ -61,7 +61,7 @@ for elem in root.iter('wpt'):
 
 dumpInc("Create GPX file")
 #-----------------------------------------------------------
-ET.indent(ET.ElementTree(root), space="\t", level=0)
+#ET.indent(ET.ElementTree(root), space="\t", level=0)
 
 dumpInc(f"Save updated GPX file")
 #-----------------------------------------------------------

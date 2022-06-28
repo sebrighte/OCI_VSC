@@ -1,0 +1,6 @@
+sudo cp /config/workspace/WinningTides/  /var/www/html/ -r
+sudo cp /config/workspace/WinningTides/winningtides.conf /etc/apache2/sites-available
+sudo a2dissite winningtides.conf
+sudo a2ensite winningtides.conf
+sudo /etc/init.d/apache2 restart
+service apache2 reload

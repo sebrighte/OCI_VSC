@@ -1,0 +1,9 @@
+<div class="column center border">
+      <h3>HEADING</h3>
+      <a title="Click here for Solent & IOW area DT" href="URL" target="_blank"><img class="center" title="TITLE" src="static/winningtides.jpg" /><br/>Solent & IOW (All)</a>
+      <br/><a title="Click here for Solent area DT" href="URL/1" target="_blank">North Solent & IOW area only</a>
+      <br/><a title="Click here for North West Solent & IOW area rates DT" href="URL/2" target="_blank">North West Solent & IOW area only</a>
+      <br/><a title="Click here for South West IOW area rates DT" href="URL/3" target="_blank">South West IOW area only</a>
+      <br/><a title="Click here for East IOW area rates DT" href="URL/4" target="_blank">East IOW area only</a>
+      <br/><br/><br/>--------------------------------------------------
+</div>

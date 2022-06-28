@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css"
+    type="text/css">
+  </link>
+  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<title>Solent Racing Route</title>
+<style>
+  #map {
+    width: 90%;
+    height: 400px;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .txt {
+    font-size: calc(10px + 0.2vw);
+    text-align: center;
+  }
+
+  .txt2 {
+    font-size: calc(10px + 0.6vw);
+    text-align: center;
+  }
+
+  .header {
+    font-family: arial;
+    padding: 5px;
+    text-align: center;
+    background: #1abc9c;
+    color: black;
+    font-size: calc(6px + 1.5vw);
+  }
+
+  th,
+  td {
+    font-family: arial;
+    font-size: calc(10px + 0.6vw);
+    border: 1px solid black;
+    padding: 10px;
+    border-spacing: 0px;
+  }
+
+  th {
+    color: white;
+    background: black;
+    border: 1px solid white;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  table {
+    font-family: arial;
+    font-size: calc(10px + 0.6vw);
+    border: 1px solid black;
+    padding: 0px;
+    border-spacing: 0px;
+  }
+</style>
+
+<body>
+
+  <div class='header'>
+    <h1>Solent Racemarks</h1>
+    <p>Race Marks Route and Bearing <a href="#" onclick="GetUrl()"> Home</a></p>
+  </div>
+  <br>
+  <div class="txt">
+    <input class="txt2" type="text" size="30" id="crs" value="3Z 3US 4NP 31P 4US 3Z">
+    <button class="txt2" onclick="myFunction()">Click to calculate</button>
+    <br /><br /><label class="txt2" id="lbl"></label>
+  </div><br />
+  <div id="map" class="map center"></div>
+</body>
+<script>
+
+  function GetUrl() { location.replace(window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1)) }
+
+  function customLoader(tile, src) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.addEventListener('loadend', function (evt) {
+      var data = this.response;
+      if (data !== undefined) {
+        tile.getImage().src = URL.createObjectURL(data);
+      } else {
+        tile.setState(TileState.ERROR);
+      }
+    });
+    xhr.addEventListener('error', function () {
+      tile.setState(TileState.ERROR);
+    });
+    xhr.open('GET', src);
+    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", "9d7d513a7e9849f8bc3ad9f05fe0b033");
+    xhr.send();
+  };
+
+  function fetchData(url) {
+    strReturn = "";
+    jQuery.ajax({
+      url: url,
+      crossDomain: true,
+      success: function (data) {
+        strReturn = data;
+      },
+      error: function (err) {
+        alert(url + JSON.stringify(err));
+      },
+      async: false,
+    });
+    return strReturn;
+  }
+
+  let MarkStyleFunction = function (feature, resolution) {
+    return new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 3,
+        //fill: new ol.style.Fill({ color: 'black' }),
+        stroke: new ol.style.Stroke({
+          color: [255, 0, 0], width: 2
+        })
+      }),
+      text: new ol.style.Text({
+        text: "       " + feature.get("name"),
+        scale: 1.5,
+      })
+    });
+  }
+
+  //https://admiraltyapi.azure-api.net/avcso-enc-dataset/WMSServer?&service=WMS&request=GetMap&layers=&styles=&format=image%2Fjpeg&transparent=false&version=1.1.1&SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&FORMAT=image%2Fpng&height=256&width=256&srs=EPSG%3A3857&bbox=-234814.5508920615,6261721.357121641,-156543.03392804097,6339992.874085658
+  //[{"key":"Ocp-Apim-Subscription-Key","value":"9d7d513a7e9849f8bc3ad9f05fe0b033","description":""}]
+
+  var wms = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://admiraltyapi.azure-api.net/avcso-enc-dataset/WMSServer?',
+      params: {'LAYERS': '0,2,11,13,15', 'TILED': true},
+      tileLoadFunction: customLoader
+    })
+  });
+
+  let RouteStyleFunction = function (feature, resolution) {
+    return new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: [0, 200, 0, 0.5],
+        width: 10
+      })
+    });
+  }
+
+  var GPXMarks = new ol.source.Vector({
+    //url: "https://oci.sebright.synology.me/winningtides/marks",
+    url: "marks",
+    format: new ol.format.GPX()
+  });
+
+  var GPXRouteStyle = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: [0, 0, 200, 0.5],
+      width: 5
+    })
+  });
+
+  var cartocdn = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+      url: 'https://{a-d}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+      opaque: false,
+    }),
+  });
+
+  var map = new ol.Map({
+    target: 'map',
+    layers: [
+      wms,
+      //cartocdn,
+      new ol.layer.Vector({
+        source: GPXMarks,
+        style: MarkStyleFunction,
+        name: "GPXMarkers"
+      })
+    ],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([-3.12221, 50.98679]),
+      zoom: 18
+    })
+  });
+
+  var listenerKey = GPXMarks.on('change', function (e) {
+    if (GPXMarks.getState() == 'ready') {
+      map.getView().fit(GPXMarks.getExtent());
+      map.getView().setZoom(map.getView().getZoom() - 0.1);
+    }
+  });
+
+  function addLayer(route) {
+    map.getLayers().getArray()
+      .filter(layer => layer.get('name') === 'GPXLayer')
+      .forEach(layer => map.removeLayer(layer));
+
+    var GPXSource = new ol.source.Vector({
+      url: "https://oci.sebright.synology.me/winningtides/gpx/" + route,
+      format: new ol.format.GPX()
+    });
+
+    var GPXLayer = new ol.layer.Vector({
+      source: GPXSource,
+      style: RouteStyleFunction,
+      name: "GPXLayer"
+    })
+
+    map.addLayer(GPXLayer);
+
+    var listenerKey2 = GPXLayer.on('change', function (e) {
+      if (GPXSource.getState() == 'ready') {
+        map.getView().fit(GPXSource.getExtent());
+        map.getView().setZoom(map.getView().getZoom() - 0.3);
+      }
+    });
+  }
+
+  function myFunction() {
+    var route = document.getElementById("crs").value;
+    //alert("The URL of this page is: " + window.location.href);
+    document.getElementById("lbl").innerHTML = fetchData(window.location.href + "/" + route)
+    //document.getElementById("lbl").innerHTML = fetchData("https://oci.sebright.synology.me/winningtides/route/" + route)
+    addLayer(route)
+  }
+</script>
+
+
+
+</html>
