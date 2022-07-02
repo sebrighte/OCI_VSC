@@ -98,6 +98,8 @@
 
   var extent = { IOW: transform([-2.2, 50.4, -0.71, 51]) }
 
+  //hi ernie
+
   function customLoader(tile, src) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
@@ -202,7 +204,7 @@
       })
     });
   }
-  
+
   function addLayer(route) {
     map.getLayers().getArray()
       .filter(layer => layer.get('name') === 'GPXLayer')
