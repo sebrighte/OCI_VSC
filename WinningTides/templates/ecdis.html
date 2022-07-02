@@ -65,6 +65,11 @@
 			})
 		});
 
+		map.on('moveend', function (e) {
+		  var newZoom = map.getView().getZoom();
+		  console.log('zoom end, new zoom: ' + newZoom);
+		});
+
 	</script>
 
 </body>

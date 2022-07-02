@@ -7,11 +7,13 @@ from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS, cross_origin
 
 import sys
-if "/var/www/html/" in os.path.abspath(os.getcwd()):
+#if "/var/www/html/" in os.path.abspath(os.getcwd()):
+if "/" == os.path.abspath(os.getcwd()):
     sys.path.insert(0,"/var/www/html/WinningTides/")
 
 from tides import *
 from gpxtojson import * 
+from date import * 
 
 from json2html import *
 import json
@@ -35,6 +37,10 @@ def favicon():
     return send_from_directory(os.path.join(application.root_path, 'static'),
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
+@application.route('/getcwd')
+def getcwd():
+    return os.path.abspath(os.getcwd())
+
 @application.route('/')
 def Index():
     return render_template('index.html')
@@ -45,6 +51,7 @@ def ecdis():
 
 @application.route('/tides')
 def GetTides():
+    from datetime import datetime
     response = requests.get("https://easytide.admiralty.co.uk/Home/GetPredictionData?stationId=0065")
     JSONOrig = json.loads(response.content)
     JSONOrig = JSONOrig['tidalHeightOccurrenceList']
@@ -61,7 +68,9 @@ def GetTides():
         del a['isApproximateHeight']
         del a['isApproximateTime']
         a['Height'] = str(round(a['Height'],2)) + "m"
-        a['DateTime'] = a['DateTime'].replace('T', ' ')  
+        dt = datetime.strptime(a['DateTime'], '%Y-%m-%dT%H:%M:%S')
+        #2022-07-01 05:54:00
+        a['DateTime'] = is_dst(dt)
     tableAttrib = "class=\"center\""
     tableData = json2html.convert(json = JSON, table_attributes=tableAttrib)
     return render_template("tides.html", data=JSONOrig, tdata=tableData)
@@ -78,7 +87,7 @@ def GetMarks():
 
 @application.route('/route')
 def CourseWebPage():
-    return render_template('route.html')
+    return render_template('route2.html')
 
 @application.route('/streams')
 def Create_html_tidetimes():

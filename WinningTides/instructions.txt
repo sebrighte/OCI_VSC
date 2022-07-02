@@ -4,3 +4,6 @@ sudo a2dissite winningtides.conf
 sudo a2ensite winningtides.conf
 sudo /etc/init.d/apache2 restart
 service apache2 reload
+
+
+sudo cp /var/log/apache2/error.log /config/workspace/WinningTides/
