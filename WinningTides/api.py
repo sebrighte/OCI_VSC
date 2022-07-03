@@ -37,9 +37,9 @@ def favicon():
     return send_from_directory(os.path.join(application.root_path, 'static'),
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
-@application.route('/getcwd')
-def getcwd():
-    return os.path.abspath(os.getcwd())
+# @application.route('/getcwd')
+# def getcwd():
+#     return os.path.abspath(os.getcwd())
 
 @application.route('/')
 def Index():
@@ -139,12 +139,10 @@ def GetGPX(routein):
 def Create_pdf_bydate(datein , areasin = "1234"):
     return Create_pdf(datein, areasin, application)
 
-
 @application.route('/pdf0/<areasin>')
 @application.route('/pdf0')
-@application.
 def Create_pdf_next(areasin = "1234"):
-    #@application.representation('application/pdf')
+    #@application.  .representation('application/pdf')
     pdf = Create_pdf("", areasin, application)
     return pdf
    
