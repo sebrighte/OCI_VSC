@@ -40,8 +40,8 @@
 			xhr.addEventListener('error', function () {
 				tile.setState(TileState.ERROR);
 			});
-            
-            xhr.open('GET', src);
+
+			xhr.open('GET', src);
 			xhr.setRequestHeader("Ocp-Apim-Subscription-Key", "9d7d513a7e9849f8bc3ad9f05fe0b033");
 			xhr.send();
 		};
@@ -56,9 +56,40 @@
 			})
 		});
 
+		let MarkStyleFunction = function (feature, resolution) {
+			return new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: 3,
+					//fill: new ol.style.Fill({ color: 'black' }),
+					stroke: new ol.style.Stroke({
+						color: [255, 0, 0], width: 2
+					})
+				}),
+				text: new ol.style.Text({
+					text: "       " + feature.get("name"),
+					scale: 1.5,
+				})
+			});
+		}
+
+		var GPXMarks = new ol.source.Vector({
+			url: "https://oci.sebright.synology.me/winningtides/marks",
+			//url: "marks",
+			format: new ol.format.GPX()
+		});
+
 		var map = new ol.Map({
 			target: 'map',
-			layers: [wms],
+			layers: [wms,
+				//cartocdn,
+				new ol.layer.Vector({
+					source: GPXMarks,
+					style: MarkStyleFunction,
+					name: "GPXMarkers"
+				}),
+
+
+			],
 			view: new ol.View({
 				center: ol.proj.fromLonLat([-1.29772, 50.78306]),
 				zoom: 13
@@ -66,8 +97,11 @@
 		});
 
 		map.on('moveend', function (e) {
-		  var newZoom = map.getView().getZoom();
-		  console.log('zoom end, new zoom: ' + newZoom);
+			var newZoom = map.getView().getZoom();
+			console.log('zoom end, new zoom: ' + newZoom);
+			var glbox = map.getView().calculateExtent(map.getSize()); // doesn't look as expected.
+			var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326'); // this looked like what I expected.
+			console.log(box);
 		});
 
 	</script>

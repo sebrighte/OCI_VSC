@@ -142,9 +142,7 @@ def Create_pdf_bydate(datein , areasin = "1234"):
 @application.route('/pdf0/<areasin>')
 @application.route('/pdf0')
 def Create_pdf_next(areasin = "1234"):
-    #@application.  .representation('application/pdf')
-    pdf = Create_pdf("", areasin, application)
-    return pdf
+    return Create_pdf("", areasin, application)
    
 cors = CORS(application)
 application.config['CORS_HEADERS'] = 'Content-Type'

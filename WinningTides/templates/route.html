@@ -91,6 +91,12 @@
 
   function GetUrl() { location.replace(window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1)) }
 
+  function transform(extent) {
+    return ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+  }
+
+  const extents = { IOW: transform([-2, 50.5, -0.7, 51]) };
+
   function customLoader(tile, src) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
@@ -164,8 +170,8 @@
     rate = parseInt(state.split(" ")[1]) * 15;
     rateKn = parseFloat(state.split(" ")[1]).toFixed(2) + "kn";
     if (rate > 20) {
-        console.log("Rate > 20" );
-        rate = 20;
+      console.log("Rate > 20");
+      rate = 20;
     }
     dir = parseInt(state.split(" ")[2]);
     return new ol.style.Style({
@@ -184,6 +190,7 @@
   }
 
   var wms = new ol.layer.Tile({
+    extent: extents.IOW,
     source: new ol.source.TileWMS({
       url: 'https://admiraltyapi.azure-api.net/avcso-enc-dataset/WMSServer?',
       params: { 'LAYERS': '0,2,11,13,15', 'TILED': true },
@@ -200,13 +207,17 @@
     });
   }
 
-  var GPXMarks = new ol.source.Vector({
+  var GPXMarksSrc = new ol.source.Vector({
     url: "https://oci.sebright.synology.me/winningtides/marks",
     //url: "marks",
     format: new ol.format.GPX()
   });
 
-
+  var GPXMarksLyr = new ol.layer.Vector({
+        source: GPXMarksSrc,
+        style: MarkStyleFunction,
+        name: "GPXMarkers"
+      });
 
   var GPXRouteStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
@@ -224,17 +235,7 @@
 
   var map = new ol.Map({
     target: 'map',
-    layers: [
-      wms,
-      //cartocdn,
-      new ol.layer.Vector({
-        source: GPXMarks,
-        style: MarkStyleFunction,
-        name: "GPXMarkers"
-      }),
-
-
-    ],
+    layers: [cartocdn, wms, GPXMarksLyr],
     view: new ol.View({
       //center: ol.proj.fromLonLat([-3.12221, 50.98679]),
       center: ol.proj.fromLonLat([-1.29772, 50.76306]),
@@ -242,9 +243,9 @@
     })
   });
 
-  var listenerKey = GPXMarks.on('change', function (e) {
-    if (GPXMarks.getState() == 'ready') {
-      map.getView().fit(GPXMarks.getExtent());
+  var listenerKey = GPXMarksSrc.on('change', function (e) {
+    if (GPXMarksSrc.getState() == 'ready') {
+      map.getView().fit(GPXMarksSrc.getExtent());
       map.getView().setZoom(map.getView().getZoom() - 0.1);
     }
   });
@@ -279,7 +280,7 @@
       url = "https://sebright.uksouth.cloudapp.azure.com/api/TidesSDK/api/v1/Stations?type=Streams&north=" + box[3] + "&south=" + box[1] + "&east=" + box[2] + "&west=" + box[0] + "&api_key=ukho_337900";
       geojsonObject2 = fetch(url);
       //geojsonObject2 = fetch("https://sebright.uksouth.cloudapp.azure.com/api/TidesSDK/api/v1/Stations?type=Streams&north=50.89317555671184&south=50.43258161029506&east=-0.7092647998046875&west=-1.8861752001953127&api_key=ukho_337900");
-      console.log(url);
+      //console.log(url);
       geojson_vectorSource = new ol.source.Vector({
         features: (new ol.format.GeoJSON()).readFeatures(geojsonObject2, { featureProjection: 'EPSG:3857' })
       });
@@ -295,10 +296,8 @@
 
   function myFunction() {
     var route = document.getElementById("crs").value;
-    //alert("The URL of this page is: " + window.location.href);
-    //document.getElementById("lbl").innerHTML = fetchData(window.location.href + "/" + route)
-    //document.getElementById("lbl").innerHTML = fetchData(window.location.href + '/' + route)
-    //document.getElementById("lbl").innerHTML = fetchData("https://oci.sebright.synology.me/winningtides/route/" + route)
+    url = encodeURIComponent("/route/" + route);
+    document.getElementById("lbl").innerHTML = fetchData(url);
     addLayer(route)
   }
 
