@@ -2469,3 +2469,33 @@ TERM environment variable not set.
 [Sat Jul 02 07:30:49.690380 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:54952]   File "/var/www/html/WinningTides/api.py", line 13, in <module>, referer: https://oci.sebright.synology.me/
 [Sat Jul 02 07:30:49.690384 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:54952]     from tides import *, referer: https://oci.sebright.synology.me/
 [Sat Jul 02 07:30:49.690400 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:54952] ModuleNotFoundError: No module named 'tides', referer: https://oci.sebright.synology.me/
+TERM environment variable not set.
+TERM environment variable not set.
+TERM environment variable not set.
+TERM environment variable not set.
+TERM environment variable not set.
+TERM environment variable not set.
+TERM environment variable not set.
+[Sat Jul 02 09:21:38.151485 2022] [php:error] [pid 30729] [client 90.151.171.106:28842] script '/var/www/html/ip.php' not found or unable to stat, referer: https://google.com/
+[Sat Jul 02 10:23:46.772646 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:32836] Target WSGI script not found or unable to stat: /var/www/html/WinningTides, referer: https://oci.sebright.synology.me/winningtides/
+TERM environment variable not set.
+[Sun Jul 03 00:04:01.258694 2022] [core:error] [pid 30689] [client 34.65.197.10:56326] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Sun Jul 03 00:04:01.393422 2022] [authz_core:error] [pid 30687] [client 34.65.197.10:56490] AH01630: client denied by server configuration: /var/www/html/server-status
+[Sun Jul 03 00:04:01.531055 2022] [php:error] [pid 30688] [client 34.65.197.10:56626] script '/var/www/html/info.php' not found or unable to stat
+[Sun Jul 03 01:32:43.367656 2022] [php:error] [pid 30690] [client 185.7.214.104:46716] script '/var/www/html/index.php' not found or unable to stat
+[Sun Jul 03 06:44:23.227547 2022] [core:error] [pid 38461] [client 185.7.214.104:55482] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Jul 03 09:47:28.730250 2022] [php:error] [pid 30686] [client 85.119.151.251:36667] script '/var/www/html/ip.php' not found or unable to stat, referer: https://google.com/
+TERM environment variable not set.
+[Sun Jul 03 12:12:03.743695 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:44958] mod_wsgi (pid=30690): Exception occurred processing WSGI script '/var/www/html/WinningTides/api.py'., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:12:03.743896 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:44958] OSError: Apache/mod_wsgi failed to write response data: Broken pipe., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:13:16.410427 2022] [wsgi:error] [pid 30686] [client 86.129.28.77:45026] mod_wsgi (pid=30686): Exception occurred processing WSGI script '/var/www/html/WinningTides/api.py'., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:13:16.410642 2022] [wsgi:error] [pid 30686] [client 86.129.28.77:45026] OSError: Apache/mod_wsgi failed to write response data: Broken pipe., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:13:23.866743 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:45036] mod_wsgi (pid=30690): Exception occurred processing WSGI script '/var/www/html/WinningTides/api.py'., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:13:23.866884 2022] [wsgi:error] [pid 30690] [client 86.129.28.77:45036] OSError: Apache/mod_wsgi failed to write response data: Connection reset by peer., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:14:50.953161 2022] [wsgi:error] [pid 30687] [client 86.129.28.77:45162] mod_wsgi (pid=30687): Exception occurred processing WSGI script '/var/www/html/WinningTides/api.py'., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:14:50.953339 2022] [wsgi:error] [pid 30687] [client 86.129.28.77:45162] OSError: Apache/mod_wsgi failed to write response data: Broken pipe., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:15:25.373681 2022] [wsgi:error] [pid 30689] [client 86.129.28.77:45186] mod_wsgi (pid=30689): Exception occurred processing WSGI script '/var/www/html/WinningTides/api.py'., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:15:25.373904 2022] [wsgi:error] [pid 30689] [client 86.129.28.77:45186] OSError: Apache/mod_wsgi failed to write response data: Broken pipe., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:16:06.239641 2022] [wsgi:error] [pid 30688] [client 86.129.28.77:45230] mod_wsgi (pid=30688): Exception occurred processing WSGI script '/var/www/html/WinningTides/api.py'., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 12:16:06.239810 2022] [wsgi:error] [pid 30688] [client 86.129.28.77:45230] OSError: Apache/mod_wsgi failed to write response data: Broken pipe., referer: https://oci.sebright.synology.me/winningtides/
+[Sun Jul 03 20:54:33.771003 2022] [php:error] [pid 35029] [client 185.7.214.104:54948] script '/var/www/html/index.php' not found or unable to stat
