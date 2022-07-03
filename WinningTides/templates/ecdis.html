@@ -101,7 +101,7 @@
 			console.log('zoom end, new zoom: ' + newZoom);
 			var glbox = map.getView().calculateExtent(map.getSize()); // doesn't look as expected.
 			var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326'); // this looked like what I expected.
-			console.log(box);
+			//console.log(box);
 		});
 
 	</script>

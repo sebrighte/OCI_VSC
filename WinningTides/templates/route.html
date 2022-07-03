@@ -191,6 +191,7 @@
 
   var wms = new ol.layer.Tile({
     extent: extents.IOW,
+    minZoom: 10,
     source: new ol.source.TileWMS({
       url: 'https://admiraltyapi.azure-api.net/avcso-enc-dataset/WMSServer?',
       params: { 'LAYERS': '0,2,11,13,15', 'TILED': true },
@@ -214,10 +215,11 @@
   });
 
   var GPXMarksLyr = new ol.layer.Vector({
-        source: GPXMarksSrc,
-        style: MarkStyleFunction,
-        name: "GPXMarkers"
-      });
+    minZoom: 9.5,
+    source: GPXMarksSrc,
+    style: MarkStyleFunction,
+    name: "GPXMarkers"
+  });
 
   var GPXRouteStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
@@ -261,6 +263,7 @@
     });
 
     var GPXLayer = new ol.layer.Vector({
+      minZoom: 10,
       source: GPXSource,
       style: RouteStyleFunction,
       name: "GPXLayer"
@@ -274,18 +277,16 @@
         map.getView().setZoom(map.getView().getZoom() - 0.5);
       }
 
-      var glbox = map.getView().calculateExtent(map.getSize()); // doesn't look as expected.
-      var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326'); // this looked like what I expected.
-      //console.log(box);
+      var glbox = map.getView().calculateExtent(map.getSize());
+      var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326');
       url = "https://sebright.uksouth.cloudapp.azure.com/api/TidesSDK/api/v1/Stations?type=Streams&north=" + box[3] + "&south=" + box[1] + "&east=" + box[2] + "&west=" + box[0] + "&api_key=ukho_337900";
       geojsonObject2 = fetch(url);
-      //geojsonObject2 = fetch("https://sebright.uksouth.cloudapp.azure.com/api/TidesSDK/api/v1/Stations?type=Streams&north=50.89317555671184&south=50.43258161029506&east=-0.7092647998046875&west=-1.8861752001953127&api_key=ukho_337900");
-      //console.log(url);
       geojson_vectorSource = new ol.source.Vector({
         features: (new ol.format.GeoJSON()).readFeatures(geojsonObject2, { featureProjection: 'EPSG:3857' })
       });
 
       geojson_vectorLayer = new ol.layer.Vector({
+        minZoom: 10,
         source: geojson_vectorSource,
         style: StreamImgStyleFunction
       });
@@ -301,8 +302,13 @@
     addLayer(route)
   }
 
-
-
+  map.on('moveend', function (e) {
+			var newZoom = map.getView().getZoom();
+			console.log('zoom end, new zoom: ' + newZoom);
+			var glbox = map.getView().calculateExtent(map.getSize()); // doesn't look as expected.
+			var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326'); // this looked like what I expected.
+			//console.log(box);
+		});
 </script>
 
 
