@@ -91,7 +91,7 @@ def GetMarks():
 
 @application.route('/route')
 def CourseWebPage():
-    return render_template('route3.html')
+    return render_template('route.html')
 
 @application.route('/streams')
 def Create_html_tidetimes():
