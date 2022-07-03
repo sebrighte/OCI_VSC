@@ -222,6 +222,17 @@
     })
 
     map.addLayer(GPXLayer);
+
+    var listenerKey = GPXSource.on('change', function (e) {
+      if (GPXSource.getState() == 'ready') {
+        map.getView().fit(GPXSource.getExtent());
+        map.getView().setZoom(map.getView().getZoom() - 1);
+      }
+    });
+
+    
+
+
   }
 
   function myFunction() {
@@ -238,4 +249,5 @@
   // });
 
 </script>
+
 </html>

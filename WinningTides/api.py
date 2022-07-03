@@ -2,7 +2,7 @@
 import sys, os
 
 
-from flask import Flask, request, render_template, send_from_directory, jsonify, make_response, url_for, Response
+from flask import Flask, request, redirect, render_template, send_file, send_from_directory, jsonify, make_response, url_for, Response
 from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS, cross_origin
 
@@ -49,6 +49,10 @@ def Index():
 def ecdis():
     return render_template('ecdis.html')
 
+@application.route('/chart')
+def show_static_pdf():
+    return redirect("static/3026.pdf")
+
 @application.route('/tides')
 def GetTides():
     from datetime import datetime
@@ -87,7 +91,7 @@ def GetMarks():
 
 @application.route('/route')
 def CourseWebPage():
-    return render_template('route2.html')
+    return render_template('route3.html')
 
 @application.route('/streams')
 def Create_html_tidetimes():
@@ -135,11 +139,15 @@ def GetGPX(routein):
 def Create_pdf_bydate(datein , areasin = "1234"):
     return Create_pdf(datein, areasin, application)
 
+
 @application.route('/pdf0/<areasin>')
 @application.route('/pdf0')
+@application.
 def Create_pdf_next(areasin = "1234"):
-    return Create_pdf("", areasin, application)
-
+    #@application.representation('application/pdf')
+    pdf = Create_pdf("", areasin, application)
+    return pdf
+   
 cors = CORS(application)
 application.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(application)
