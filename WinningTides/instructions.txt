@@ -7,5 +7,4 @@ service apache2 reload
 
 sudo rm /var/www/html/WinningTides/  -r
 
-
 sudo cp /var/log/apache2/error.log /config/workspace/WinningTides/
