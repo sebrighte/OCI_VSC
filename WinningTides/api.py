@@ -49,9 +49,13 @@ def Index():
 def ecdis():
     return render_template('ecdis.html')
 
-@application.route('/chart')
-def show_static_pdf():
+@application.route('/chart3026')
+def show_static_pdf_3026():
     return redirect("static/3026.pdf")
+
+@application.route('/chart2045')
+def show_static_pdf_2045():
+    return redirect("static/2045.pdf")
 
 @application.route('/tides')
 def GetTides():
