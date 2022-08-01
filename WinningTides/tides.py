@@ -27,10 +27,13 @@ def Create_pdf(date, areas, appication):
     response.headers.set('Content-Type', 'application/pdf')
     return response
 
+# 2022-07-05 21:36:00 
+# 2022-07-05 22:36:00+01:00
 def getLocalTimestring(dttest, formatA):
     testUTC = dttest.strftime(formatA)
     testBST = dttest.astimezone(pytz.timezone('Europe/London')).strftime(formatA)
-    if testUTC != testBST: return testBST + " BST"
+    if "+01:00" in testBST: return testBST + " BST"
+    #if testUTC != testBST: return testBST + " BST"
     else: return testUTC + " UTC"
 
 def GetNextHighTidePortsmouth(data=False):

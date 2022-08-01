@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css" type="text/css">
+	</link>
+	<style>
+		#map {
+			position: fixed;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+		}
+	</style>
+	<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<title>ECDIS Charts UK</title>
+</head>
+
+<body>
+
+	<div id="map" class="map"></div>
+
+	<script>
+
+		function customLoader(tile, src) {
+			var xhr = new XMLHttpRequest();
+			xhr.responseType = 'blob';
+			xhr.addEventListener('loadend', function (evt) {
+				var data = this.response;
+				if (data !== undefined) {
+					tile.getImage().src = URL.createObjectURL(data);
+				} else {
+					tile.setState(TileState.ERROR);
+				}
+			});
+			xhr.addEventListener('error', function () {
+				tile.setState(TileState.ERROR);
+			});
+
+			xhr.open('GET', src);
+			xhr.setRequestHeader("Ocp-Apim-Subscription-Key", "9d7d513a7e9849f8bc3ad9f05fe0b033");
+			xhr.send();
+		};
+
+		let StreamImgStyleFunction = function (feature, resolution) {
+			state = feature.get("State");
+			rate = parseInt(state.split(" ")[1]) * 15;
+			rateKn = parseFloat(state.split(" ")[1]).toFixed(2) + "kn";
+			if (rate > 20) {
+				console.log("Rate > 20");
+				rate = 20;
+			}
+			dir = parseInt(state.split(" ")[2]);
+			return new ol.style.Style({
+				image: new ol.style.Icon({
+					color: 'white',
+					scale: 3,
+					crossOrigin: 'anonymous',
+					src: 'static/rates/images/rate' + dir + '_' + rate + '.png'
+				}),
+				text: new ol.style.Text({
+					text: rateKn,
+					scale: 1.5,
+					font: 'bold 11px Arial'
+				})
+			});
+		}
+
+		function fetch(url) {
+			strReturn = "";
+			jQuery.ajax({
+				url: url,
+				crossDomain: true,
+				success: function (data) {
+					strReturn = data;
+				},
+				error: function (err) {
+					alert('err');
+					//strReturn = err.responseText;
+				},
+				async: false
+			});
+			return strReturn;
+		}
+
+		var wms = new ol.layer.Tile({
+			source: new ol.source.TileWMS({
+				url: 'https://admiraltyapi.azure-api.net/avcso-enc-dataset/WMSServer?',
+				//params: { 'LAYERS': '0,2,11,13,15', 'TILED': true },
+				//params: { 'LAYERS': '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21', 'TILED': true },
+				params: { 'LAYERS': '0,1,2,3,5,8,9,10,11,12,14,15,16,17', 'TILED': true },
+				tileLoadFunction: customLoader
+			})
+		});
+
+		let MarkStyleFunction = function (feature, resolution) {
+			return new ol.style.Style({
+				image: new ol.style.Circle({
+					radius: 3,
+					//fill: new ol.style.Fill({ color: 'black' }),
+					stroke: new ol.style.Stroke({
+						color: [255, 0, 0], width: 2
+					})
+				}),
+				text: new ol.style.Text({
+					text: "       " + feature.get("name"),
+					scale: 1.5,
+				})
+			});
+		}
+
+		var GPXMarks = new ol.source.Vector({
+			url: "https://oci.sebright.synology.me/winningtides/marks",
+			//url: "marks",
+			format: new ol.format.GPX()
+		});
+
+		var map = new ol.Map({
+			target: 'map',
+			layers: [wms,
+				//cartocdn,
+				new ol.layer.Vector({
+					source: GPXMarks,
+					style: MarkStyleFunction,
+					name: "GPXMarkers"
+				}),
+
+
+			],
+			view: new ol.View({
+				center: ol.proj.fromLonLat([-1.29772, 50.78306]),
+				zoom: 13
+			})
+		});
+
+		map.on('moveend', function (e) {
+			var newZoom = map.getView().getZoom();
+			console.log('zoom end, new zoom: ' + newZoom);
+			var glbox = map.getView().calculateExtent(map.getSize()); // doesn't look as expected.
+			var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326'); // this looked like what I expected.
+			//console.log(box);
+		});
+
+		var glbox = map.getView().calculateExtent(map.getSize());
+		var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326');
+		url = "https://sebright.uksouth.cloudapp.azure.com/api/TidesSDK/api/v1/Stations?type=Streams&north=" + box[3] + "&south=" + box[1] + "&east=" + box[2] + "&west=" + box[0] + "&api_key=ukho_337900";
+		console.log(url);
+		geojsonObject2 = fetch(url);
+		geojson_vectorSource = new ol.source.Vector({
+			features: (new ol.format.GeoJSON()).readFeatures(geojsonObject2, { featureProjection: 'EPSG:3857' })
+		});
+
+		geojson_vectorLayer = new ol.layer.Vector({
+			minZoom: 10,
+			source: geojson_vectorSource,
+			style: StreamImgStyleFunction
+		});
+
+		map.addLayer(geojson_vectorLayer);
+
+	</script>
+
+</body>
+
+</html>

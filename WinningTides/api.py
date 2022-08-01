@@ -33,7 +33,7 @@ application = Flask(__name__)
 # kill 95397
 
 @application.route('/favicon.ico')
-def favicon():
+def Get_favicon():
     return send_from_directory(os.path.join(application.root_path, 'static'),
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
@@ -42,23 +42,27 @@ def favicon():
 #     return os.path.abspath(os.getcwd())
 
 @application.route('/')
-def Index():
+def Get_HTML_Index():
     return render_template('index.html')
 
 @application.route('/ecdis')
-def ecdis():
+def Get_HTML_ECDIS():
     return render_template('ecdis.html')
 
-@application.route('/chart3026')
-def show_static_pdf_3026():
-    return redirect("static/3026.pdf")
+@application.route('/ecdisstreams')
+def Get_HTML_ECDIS_Streams():
+    return render_template('ecdisStreams.html')
 
-@application.route('/chart2045')
-def show_static_pdf_2045():
-    return redirect("static/2045.pdf")
+# @application.route('/chart3026')
+# def Get_IMG_Chart3026():
+#     return redirect("static/3026.pdf")
+
+# @application.route('/chart2045')
+# def Get_IMG_Chart2045():
+#     return redirect("static/2045.pdf")
 
 @application.route('/tides')
-def GetTides():
+def Get_HTML_Tides():
     from datetime import datetime
     response = requests.get("https://easytide.admiralty.co.uk/Home/GetPredictionData?stationId=0065")
     JSONOrig = json.loads(response.content)
@@ -83,22 +87,34 @@ def GetTides():
     tableData = json2html.convert(json = JSON, table_attributes=tableAttrib)
     return render_template("tides.html", data=JSONOrig, tdata=tableData)
 
-@application.route('/marks')
-def GetMarks():
+@application.route('/tidesinfo')
+def Get_Data_Tides():
 
-    gpxURL = "https://www.scra.org.uk/assets/documents/solentmarks-1.gpx"
-    return requests.get(gpxURL).content
+    response = make_response(json.loads(requests.get("https://easytide.admiralty.co.uk/Home/GetPredictionData?stationId=0065").content))
+    response.headers.set('Content-Type', 'application/json')
+    return response
+
+    #return json.loads(requests.get("https://easytide.admiralty.co.uk/Home/GetPredictionData?stationId=0065").content)
+
+@application.route('/marks')
+def Get_Data_Marks(): 
+
+    response = make_response(requests.get("https://www.scra.org.uk/assets/documents/solentmarks-1.gpx").content)
+    response.headers.set('Content-Type', 'application/xml')
+    return response
+
+    #return requests.get("https://www.scra.org.uk/assets/documents/solentmarks-1.gpx").content
 
     # gpxURL = application.config.root_path + "/static/solentmarks-1.gpx"
     # f = open(gpxURL, "r") 
     # return f.read()
 
 @application.route('/route')
-def CourseWebPage():
+def Get_HTML_Route():
     return render_template('route.html')
 
 @application.route('/streams')
-def Create_html_tidetimes():
+def Get_HTML_Streams():
     f = open(application.config.root_path + "/static/html.txt", "r")
     txt = f.read()
     d = open(application.config.root_path + "/static/link.txt", "r")
@@ -131,25 +147,54 @@ def Create_html_tidetimes():
     return txt.replace("REPLACEME", resp)
 
 @application.route('/route/<routein>')
-def Getcourse(routein):
+def Get_HTML_RouteTable(routein):
     return GetRouteTable(application, routein)
 
 @application.route('/gpx/<routein>')
-def GetGPX(routein):
+def Get_Data_GPX(routein):
     return GetGPXTrack(application, routein)
 
 @application.route('/pdf/<datein>/<areasin>')
 @application.route('/pdf/<datein>')
-def Create_pdf_bydate(datein , areasin = "1234"):
+def Get_PDF_ByDate(datein , areasin = "1234"):
     return Create_pdf(datein, areasin, application)
 
 @application.route('/pdf0/<areasin>')
 @application.route('/pdf0')
-def Create_pdf_next(areasin = "1234"):
+def Get_PDF_Next(areasin = "1234"):
     return Create_pdf("", areasin, application)
+
+def has_no_empty_params(rule):
+    defaults = rule.defaults if rule.defaults is not None else ()
+    arguments = rule.arguments if rule.arguments is not None else ()
+    return len(defaults) >= len(arguments)
+
+@application.route("/sitemap")
+def Get_HTML_Sitemap():
+    array = []
+    
+    linesOut = "<style>body{font-family: Arial, Helvetica, sans-serif;}div{margin: auto;  width: 50%;text-align: center;}h2, h1{text-decoration: underline;}</style><div><h1>Solent Tides - Site Map</h1>" 
+    linePDF = "<h2>PDF Creation</h2>"
+    lineHTML = "<h2>Web Pages</h2>"
+    lineData = "<h2>Data Access</h2>"
+
+    rules = application.url_map.iter_rules()
+    for rule in application.url_map.iter_rules():
+        linkText = str(rule).replace('<','&lt;')
+        linkText = linkText.replace('>','&gt;')
+        fmtRule = request.script_root + str(rule)
+        fmtRule = fmtRule.replace("<areasin>", "13")
+        fmtRule = fmtRule.replace("<datein>", "2022-01-01")
+        fmtRule = fmtRule.replace("<routein>", "3Z 3US 4NP 31P 4US 3Z")
+        addtext = "{} <a href='{}' target='_blank'/>{}{}</a><br>".format(rule.endpoint, fmtRule, request.script_root,linkText)
+        if "PDF" in rule.endpoint: linePDF = linePDF + addtext
+        if "HTML" in rule.endpoint: lineHTML = lineHTML + addtext
+        if "Data" in rule.endpoint: lineData = lineData + addtext
+    return linesOut + linePDF + lineHTML + lineData + "</div>"
    
 cors = CORS(application)
 application.config['CORS_HEADERS'] = 'Content-Type'
+application.config['JSONIFY_PRETTYPRINT_REGULAR'] = 'True'
 api = Api(application)
 
 if __name__ == '__main__':

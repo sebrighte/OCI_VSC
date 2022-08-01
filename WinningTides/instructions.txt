@@ -7,4 +7,7 @@ service apache2 reload
 
 sudo rm /var/www/html/WinningTides/  -r
 
+#Clear file (needs sudo -i)
+sudo -i
+"true" > /var/log/apache2/error.log
 sudo cp /var/log/apache2/error.log /config/workspace/WinningTides/
