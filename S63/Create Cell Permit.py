@@ -40,4 +40,4 @@ permitLine += cipher.encrypt_block(bytes.fromhex(pad(CRC))).hex().upper()
 # Test permit
 # Cell    Expiry  Cell 1 key      Cell 2 key      CRC
 # NO4D061320000830BEB9BFE3C7C6CE68B16411FD09F96982795C77B204F54D48
-print("Valid Cell permit created?", permitLine == 'NO4D061320000830BEB9BFE3C7C6CE68B16411FD09F96982795C77B204F54D48')
+print("Valid Cell permit created?", permitLine == 'NO4D061320000830BEB9BFE3C7C6CE68B16411FD09F96982795C77B204F54D48', permitLine)
